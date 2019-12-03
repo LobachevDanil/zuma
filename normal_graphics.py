@@ -83,7 +83,7 @@ class Graphics(QMainWindow):
         c = 50 * math.sqrt(2) * math.sqrt(2 * (1 - math.cos(alpha)))
         delta_x = c * math.cos(45 * math.pi / 180 - alpha / 2)
         delta_y = c * math.sin(45 * math.pi / 180 - alpha / 2)
-        print(delta_x, delta_y, self.angle)
+        #print(delta_x, delta_y, self.angle)
         u = - 100 / 2 + delta_x
         v = + 100 / 2 + delta_y
         qp.translate(u, -v)
@@ -160,7 +160,7 @@ class Graphics(QMainWindow):
 
     def mouseMoveEvent(self, event):
         self.mouse_cursor = Point(event.x(), event.y())
-        print(self.mouse_cursor)
+        #print(self.mouse_cursor)
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',
@@ -176,7 +176,7 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(200, 400))
-    level = Level(5, Point(100, 100), Point(700, 700))
+    level = Level(1, Point(0, 0), Point(700, 700))
     game = Game(frog, level)
     g = Graphics(game, Point(900, 900))
     sys.exit(app.exec_())
