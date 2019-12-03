@@ -1,7 +1,7 @@
 import math
 import sys
 
-from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QRectF
+from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QRectF, QPoint
 from PyQt5.QtGui import QPixmap, QPainter, QPen, QBrush, QTransform
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel, QWidget
 
@@ -35,6 +35,7 @@ class Graphics(QMainWindow):
 
         self.angle = 10
         self.ready = False
+        self.data = self.initialize_level_data()
 
     def initUi(self):
         self.setWindowTitle('Zuma')
@@ -67,6 +68,9 @@ class Graphics(QMainWindow):
         qp.drawEllipse(self.game.frog.position.x, self.game.frog.position.y, 4, 4)
         qp.drawLine(level.start.x, level.start.y, level.end.x, level.end.y)
 
+        # qp.drawPoints(*self.data)
+        qp.drawPolyline(*self.data)
+
         qp.drawEllipse(500, 100, 3, 3)
         qp.drawLine(200 - 50, 400 + 50, 200 - 50, 400 - 50)
         qp.drawLine(200 - 50, 400 - 50, 200 + 50, 400 - 50)
@@ -83,7 +87,7 @@ class Graphics(QMainWindow):
         c = 50 * math.sqrt(2) * math.sqrt(2 * (1 - math.cos(alpha)))
         delta_x = c * math.cos(45 * math.pi / 180 - alpha / 2)
         delta_y = c * math.sin(45 * math.pi / 180 - alpha / 2)
-        #print(delta_x, delta_y, self.angle)
+        # print(delta_x, delta_y, self.angle)
         u = - 100 / 2 + delta_x
         v = + 100 / 2 + delta_y
         qp.translate(u, -v)
@@ -94,6 +98,12 @@ class Graphics(QMainWindow):
         qp.rotate(-alpha_d)
         qp.translate(-u, v)
         qp.translate(-500, -100)
+
+    def initialize_level_data(self):
+        data = []
+        for i in range(0, 900):
+            data.append(QPoint(i, self.game.level.get_traectory(i)))
+        return data
 
     def update_graphic(self):
         tmp = self.game.level.sequence.head
@@ -160,7 +170,7 @@ class Graphics(QMainWindow):
 
     def mouseMoveEvent(self, event):
         self.mouse_cursor = Point(event.x(), event.y())
-        #print(self.mouse_cursor)
+        # print(self.mouse_cursor)
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',

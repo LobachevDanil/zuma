@@ -9,7 +9,7 @@ class Colors(enum.Enum):
     blue = TEXTURE_PATH + "blue_ball.png"
     purple = TEXTURE_PATH + "purple_ball.png"
     yellow = TEXTURE_PATH + "yellow_ball.png"
-    frog = TEXTURE_PATH + "frog_ball.png"
+    frog = TEXTURE_PATH + "frog_ball2.png"
 
 
     @staticmethod

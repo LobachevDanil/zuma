@@ -22,36 +22,32 @@ class Level:
         self.sequence_size = size
         self.start = start
         self.end = end
+        x = sym.Symbol('x')
+        self.path = x ** 2 / 1000
+        self.path_diff = sym.diff(self.path, x, 1)
         self.initialize_balls()
 
-    def change_coordinates(self, ball, t):
+    def change_coordinates(self, ball):
         """
         :type t: int
         :type ball: Ball
         """
         delta_l = 0.5
         high = ball.position.x
-        func_lev = lambda x: x * x / 1000
-        func = lambda x: math.sqrt(1 + x / 500)
-        print(integrate.quad(func, ball.position.x, high))
-
         x = sym.Symbol('x')
-        alpha = x
-        alpha_deriv = sym.diff(alpha, x, 1)
-        print(alpha_deriv)
-
-        while sym.integrate(sym.sqrt(1 + alpha_deriv), (x, ball.position.x, high)) < delta_l:
+        while sym.integrate(sym.sqrt(1 + self.path_diff), (x, ball.position.x, high)) < delta_l:
             high += 0.1
+        print("high", high, self.path.evalf(6, subs={x: high}))
+        ball.change_position(Point(high, self.path.evalf(6, subs={x: high})))
 
-        '''while integrate.quad(func, ball.position.x, high)[0] < delta_l:
-            high += 0.1'''
-        print("high", high, alpha.evalf(6, subs={x: high}))
-        ball.change_position(Point(high, alpha.evalf(6, subs={x: high})))
+    def get_traectory(self, t):
+        x = sym.Symbol('x')
+        return self.path.evalf(6, subs={x: t})
 
-    def update_balls_position(self, t):
+    def update_balls_position(self):
         tmp = self.sequence.head
         while tmp.past is not None:
-            self.change_coordinates(tmp.value, t)
+            self.change_coordinates(tmp.value)
             tmp = tmp.past
 
     def initialize_balls(self):

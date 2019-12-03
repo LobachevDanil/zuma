@@ -19,5 +19,5 @@ class Game:
             self.is_ending = True
             print('Game Over! You lose')
             return
-        self.level.update_balls_position(tick)
+        self.level.update_balls_position()
         self.frog.transform_angle(cursor_position)
