@@ -33,15 +33,12 @@ class Graphics(QMainWindow):
         self.frog_picture = self.initialize_frog()
         self.bullet = self.initialize_bullet()
 
-        self.angle = 10
-        self.ready = False
         self.data = self.initialize_level_data()
 
     def initUi(self):
         self.setWindowTitle('Zuma')
         self.setMouseTracking(True)
         self.timer.start(30, self)
-
         self.show()
 
     def draw_ball(self, ql: QLabel, b: Ball):
@@ -54,8 +51,6 @@ class Graphics(QMainWindow):
         qp.setPen(Qt.green)
         brush = QBrush(Qt.SolidPattern)
         qp.setBrush(brush)
-        if self.ready:
-            self.draw_player(qp)
         self.draw_level(qp)
         self.update()
         qp.end()
@@ -71,38 +66,10 @@ class Graphics(QMainWindow):
         # qp.drawPoints(*self.data)
         qp.drawPolyline(*self.data)
 
-        qp.drawEllipse(500, 100, 3, 3)
-        qp.drawLine(200 - 50, 400 + 50, 200 - 50, 400 - 50)
-        qp.drawLine(200 - 50, 400 - 50, 200 + 50, 400 - 50)
-        qp.drawLine(200 - 50, 400 + 50, 200 + 50, 400 + 50)
-        qp.drawLine(200 + 50, 400 + 50, 200 + 50, 400 - 50)
-        qp.drawLine(200 - 50, 400 + 50, 200 + 50, 400 - 50)
-        qp.drawLine(200 - 50, 400 - 50, 200 + 50, 400 + 50)
-
-    def draw_player(self, qp):
-        alpha = (self.game.frog.angle * math.pi / 180) % (2 * math.pi)
-        alpha_d = (self.game.frog.angle) % 360
-        # qp.drawPixmap(500 - 50, 100 - 50, QPixmap(self.game.frog.color.value).scaled(100, 100))
-        qp.translate(500, 100)
-        c = 50 * math.sqrt(2) * math.sqrt(2 * (1 - math.cos(alpha)))
-        delta_x = c * math.cos(45 * math.pi / 180 - alpha / 2)
-        delta_y = c * math.sin(45 * math.pi / 180 - alpha / 2)
-        # print(delta_x, delta_y, self.angle)
-        u = - 100 / 2 + delta_x
-        v = + 100 / 2 + delta_y
-        qp.translate(u, -v)
-        qp.rotate(alpha_d)
-        qp.drawPixmap(0, 0,
-                      QPixmap(self.game.frog.color.value).scaled(100, 100, Qt.KeepAspectRatio,
-                                                                 Qt.SmoothTransformation))
-        qp.rotate(-alpha_d)
-        qp.translate(-u, v)
-        qp.translate(-500, -100)
-
     def initialize_level_data(self):
         data = []
         for i in range(0, 900):
-            data.append(QPoint(i, self.game.level.get_traectory(i)))
+            data.append(QPoint(i, self.game.level.get_value(i)))
         return data
 
     def update_graphic(self):
@@ -116,11 +83,9 @@ class Graphics(QMainWindow):
 
     def rotate_frog(self):
         t = QTransform().rotate(self.game.frog.angle)
-        # t.translate(FROG_SIZE/2, FROG_SIZE/2)
         pm = QPixmap(self.game.frog.color.value).scaled(FROG_SIZE, FROG_SIZE, Qt.KeepAspectRatio,
                                                         Qt.SmoothTransformation)
         self.frog_picture.setPixmap(pm.transformed(t, Qt.SmoothTransformation))
-        # self.frog_picture.move(200 - 50 + 50 * math.sqrt(2)-50, 400+50-100*(self.game.frog.angle/90)-50)
 
     def timerEvent(self, event: 'QTimerEvent'):
         self.game.update(1 / 4, self.mouse_cursor)
@@ -165,15 +130,8 @@ class Graphics(QMainWindow):
         if key == Qt.Key_Space:
             self.game.shoot()
 
-        if key == Qt.Key_A:
-            self.angle += 5
-            self.ready = True
-        if key == Qt.Key_D:
-            self.ready = False
-
     def mouseMoveEvent(self, event):
         self.mouse_cursor = Point(event.x(), event.y())
-        # print(self.mouse_cursor)
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',
