@@ -21,3 +21,6 @@ class Game:
             return
         self.level.update_balls_position()
         self.frog.transform_angle(cursor_position)
+
+    def shoot(self):
+        pass

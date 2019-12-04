@@ -142,6 +142,7 @@ class Graphics(QMainWindow):
     def initialize_frog(self):
         ql = QLabel(self)
         ql.setFixedSize(FROG_SIZE, FROG_SIZE)
+        ql.setAlignment(Qt.AlignCenter)
         pm = QPixmap(self.game.frog.color.value).scaled(FROG_SIZE, FROG_SIZE, Qt.KeepAspectRatio,
                                                         Qt.SmoothTransformation)
         ql.setPixmap(pm)
@@ -159,8 +160,10 @@ class Graphics(QMainWindow):
 
     def keyPressEvent(self, event):
         key = event.key()
-        if key == Qt.Key_Space:
+        if key == Qt.Key_Shift:
             self.game.frog.swap_balls()
+        if key == Qt.Key_Space:
+            self.game.shoot()
 
         if key == Qt.Key_A:
             self.angle += 5
