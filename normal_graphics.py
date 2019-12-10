@@ -29,7 +29,6 @@ class Graphics(QMainWindow):
         self.timer = QBasicTimer()
         self.initUi()
 
-        self.initialize_balls()
         self.frog_picture = self.initialize_frog()
         self.bullet = self.initialize_bullet()
 
@@ -38,7 +37,7 @@ class Graphics(QMainWindow):
     def initUi(self):
         self.setWindowTitle('Zuma')
         self.setMouseTracking(True)
-        self.timer.start(17, self)
+        self.timer.start(30, self)
         self.show()
 
     def draw_ball(self, ql: QLabel, b: Ball):
@@ -73,8 +72,9 @@ class Graphics(QMainWindow):
         return data
 
     def update_graphic(self):
+        self.refresh_textures()
         tmp = self.game.level.sequence.head
-        while tmp.past is not None:
+        while tmp is not None:
             self.draw_ball(self.pictures[tmp.value], tmp.value)
             tmp = tmp.past
 
@@ -88,20 +88,26 @@ class Graphics(QMainWindow):
         self.frog_picture.setPixmap(pm.transformed(t, Qt.SmoothTransformation))
 
     def timerEvent(self, event: 'QTimerEvent'):
-        self.game.update(1 / 4, self.mouse_cursor)
+        self.game.update(self.mouse_cursor)
         self.update_graphic()
         if self.game.is_ending:
             self.timer.stop()
         self.rotate_frog()
 
-    def initialize_balls(self):
-        tmp = self.game.level.sequence.head
-        while tmp.past is not None:
-            ql = QLabel(self)
-            ql.setFixedSize(Ball.RADIUS, Ball.RADIUS)
-            ql.setPixmap(QPixmap(tmp.value.color.value).scaled(Ball.RADIUS, Ball.RADIUS))
-            self.pictures[tmp.value] = ql
-            ql.show()
+    def initialize_ball(self, ball):
+        ql = QLabel(self)
+        ql.setFixedSize(Ball.RADIUS, Ball.RADIUS)
+        ql.setPixmap(QPixmap(ball.color.value).scaled(Ball.RADIUS, Ball.RADIUS))
+        ql.show()
+        return ql
+
+    def refresh_textures(self):
+        sequence = self.game.level.sequence
+        tmp = sequence.head
+        while tmp is not None:
+            if tmp.value not in self.pictures:
+                self.pictures[tmp.value] = self.initialize_ball(tmp.value)
+                print(tmp.value.color)
             tmp = tmp.past
 
     def initialize_frog(self):
@@ -147,7 +153,7 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(200, 400))
-    level = Level(1, Point(0, 0), Point(700, 700))
+    level = Level(50, Point(0, 0), Point(700, 700))
     game = Game(frog, level)
     g = Graphics(game, Point(900, 900))
     sys.exit(app.exec_())

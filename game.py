@@ -14,7 +14,7 @@ class Game:
         self.level = level
         self.is_ending = False
 
-    def update(self, tick, cursor_position):
+    def update(self, cursor_position):
         if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS / 10:
             self.is_ending = True
             print('Game Over! You lose')
