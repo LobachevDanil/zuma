@@ -38,7 +38,7 @@ class Graphics(QMainWindow):
     def initUi(self):
         self.setWindowTitle('Zuma')
         self.setMouseTracking(True)
-        self.timer.start(30, self)
+        self.timer.start(17, self)
         self.show()
 
     def draw_ball(self, ql: QLabel, b: Ball):
