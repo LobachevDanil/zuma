@@ -29,8 +29,8 @@ class Graphics(QMainWindow):
         self.timer = QBasicTimer()
         self.initUi()
 
-        self.frog_picture = self.initialize_frog()
         self.bullet = self.initialize_bullet()
+        self.frog_picture = self.initialize_frog()
 
         self.data = self.initialize_level_data()
 
@@ -78,10 +78,10 @@ class Graphics(QMainWindow):
             self.draw_ball(self.pictures[tmp.value], tmp.value)
             tmp = tmp.past
 
-        bullet_pm = QPixmap(self.game.frog.current_ball.color.value).scaled(Ball.RADIUS, Ball.RADIUS)
+    def rotate_frog(self):
+        bullet_pm = QPixmap(self.game.frog.current_ball.color.value).scaled(2 * FROG_SIZE, 2 * FROG_SIZE)
         self.bullet.setPixmap(bullet_pm)
 
-    def rotate_frog(self):
         t = QTransform().rotate(self.game.frog.angle)
         pm = QPixmap(self.game.frog.color.value).scaled(FROG_SIZE, FROG_SIZE, Qt.KeepAspectRatio,
                                                         Qt.SmoothTransformation)
@@ -123,9 +123,10 @@ class Graphics(QMainWindow):
 
     def initialize_bullet(self):
         ql = QLabel(self)
-        ql.setFixedSize(Ball.RADIUS, Ball.RADIUS)
-        ql.setPixmap(QPixmap(self.game.frog.current_ball.color.value).scaled(Ball.RADIUS, Ball.RADIUS))
-        ql.move(self.game.frog.position.x - Ball.RADIUS / 2, self.game.frog.position.y - Ball.RADIUS / 2)
+        ql.setFixedSize(2 * FROG_SIZE, 2 * FROG_SIZE)
+        ql.setAlignment(Qt.AlignCenter)
+        ql.setPixmap(QPixmap(self.game.frog.current_ball.color.value).scaled(2 * FROG_SIZE, 2 * FROG_SIZE))
+        ql.move(self.game.frog.position.x - FROG_SIZE, self.game.frog.position.y - FROG_SIZE)
         ql.show()
         return ql
 

@@ -25,13 +25,14 @@ class Level:
 
         x = sym.Symbol('x')
         self.path = x ** 2 / 1000
-        self.calkulator = lambda t: t ** 2 / 1000
+        self.calculator = lambda t: t ** 2 / 1000
         self.path_diff = sym.diff(self.path, x, 1)
         self.res = self.path_diff.powsimp(2)
         self.res2 = sym.sqrt(1 + self.res)
-        self.delta_length = 1
-        self.initialize_balls()
-        self.end = Point(800, math.ceil(self.get_value(800)))
+        self.delta_length = 0.5
+
+        self._initialize_first_ball()
+        self.end = Point(800, math.ceil(self.calculator(800)))
 
     def change_coordinates(self, ball):
         """
@@ -39,10 +40,10 @@ class Level:
         """
         x = sym.Symbol('x')
         next_x = self.get_offset(ball)
-        ball.change_position(Point(next_x, self.calkulator(next_x)))
+        ball.change_position(Point(next_x, self.calculator(next_x)))
 
     def get_value(self, t):
-        return self.calkulator(t)
+        return self.calculator(t)
 
     def get_offset(self, ball):
         b = ball.position.x
@@ -60,7 +61,7 @@ class Level:
                 new_position = tmp.value.position
                 while new_position.get_distance(tmp.next.value.position) > Ball.RADIUS:
                     t = new_position.x + 0.1
-                    new_position = Point(t, self.calkulator(t))
+                    new_position = Point(t, self.calculator(t))
                 tmp.value.change_position(new_position)
                 tmp = tmp.past
 
@@ -69,10 +70,7 @@ class Level:
             color = random.randint(0, len(Colors.get_all_colors()) - 1)
             self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))
 
-    def initialize_balls(self):
+    def _initialize_first_ball(self):
         color = random.randint(0, len(Colors.get_all_colors()) - 1)
         self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))
         print('was')
-        '''for i in range(self.sequence_size - 1, -2, -1):
-            color = random.randint(0, len(Colors.get_all_colors()) - 1)
-            self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))'''

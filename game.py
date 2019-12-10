@@ -23,4 +23,4 @@ class Game:
         self.frog.transform_angle(cursor_position)
 
     def shoot(self):
-        pass
+        self.frog.get_next_ball()
