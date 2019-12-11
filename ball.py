@@ -14,6 +14,7 @@ class Ball:
     def change_position(self, position, parameter=0):
         """
         :type position: Point
+        :type parameter: float
         """
         self.position = position
         self.parameter = parameter

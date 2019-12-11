@@ -14,14 +14,12 @@ class Level3:
     def __init__(self, size, start, end):
         """
         :type size: int
-        :type frog_position: Point
-        :type start: Point
-        :type end: Point
+        :type start: float
+        :type end: float
         """
         self.sequence = Sequence()
         self.sequence_size = size
-        self.start = start
-        self.end = end
+        self.delta_length = 0.5
 
         x = sym.Symbol('x')
         self.path = 100 * sym.sin(x / 50) + 400
@@ -29,26 +27,23 @@ class Level3:
         self.path_diff = sym.diff(self.path, x, 1)
         self.res = self.path_diff ** 2
         self.res2 = sym.sqrt(1 + self.res)
-        print(self.res2)
-        self.delta_length = 0.5
         self.integrator = lambda t: math.sqrt(4 * math.cos(t / 50) ** 2 + 1)
-        self.start = Point(0, self.calculator(0))
+        self.start = Point(start, self.calculator(start))
+        self.end = Point(end, math.ceil(self.calculator(end)))
 
-        self._initialize_first_ball()
-        self.end = Point(800, math.ceil(self.calculator(800)))
+        self._add_ball()
 
-    def change_coordinates(self, ball):
+    def _change_coordinates(self, ball):
         """
         :type ball: Ball
         """
-        x = sym.Symbol('x')
-        next_x = self.get_offset(ball)
+        next_x = self._get_offset(ball)
         ball.change_position(Point(next_x, self.calculator(next_x)))
 
     def get_path(self):
-        x = 0
+        x = self.start.x
         i = 0
-        delta = 800 / 1000
+        delta = (self.end.x - self.start.x) / 1000
         result = []
         while i < 1000:
             result.append(self.translate_to_point(x))
@@ -59,35 +54,30 @@ class Level3:
     def translate_to_point(self, t):
         return math.ceil(t), math.ceil(self.calculator(t))
 
-    def get_offset(self, ball):
+    def _get_offset(self, ball):
         b = ball.position.x
-        x = sym.Symbol('x')
         while integrate.quad(self.integrator, ball.position.x, b)[0] < self.delta_length:
             b += 0.5
         return b
 
     def update_balls_position(self):
         tmp = self.sequence.head
-        self.change_coordinates(tmp.value)
+        self._change_coordinates(tmp.value)
         tmp = self.sequence.head.past
-        if tmp is not None:
-            while tmp is not None:
-                new_position = tmp.value.position
-                while new_position.get_distance(tmp.next.value.position) > Ball.RADIUS:
-                    t = new_position.x + 0.1
-                    new_position = Point(t, self.calculator(t))
-                tmp.value.change_position(new_position)
-                tmp = tmp.past
+
+        while tmp is not None:
+            new_position = tmp.value.position
+            while new_position.get_distance(tmp.next.value.position) > Ball.RADIUS:
+                t = new_position.x + 0.1
+                new_position = Point(t, self.calculator(t))
+            tmp.value.change_position(new_position)
+            tmp = tmp.past
 
         if self.sequence.size < self.sequence_size and self.start.get_distance(
                 self.sequence.tail.value.position) >= Ball.RADIUS:
-            color = random.randint(0, len(Colors.get_all_colors()) - 1)
-            self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))
+            self._add_ball()
 
-    def _initialize_first_ball(self):
+    def _add_ball(self):
         color = random.randint(0, len(Colors.get_all_colors()) - 1)
-        self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))
-        print('was')
-
-
-Level3(1, Point(0, 0), Point(0, 0))
+        ball = Ball(self.start.x, self.start.y, Colors.get_all_colors()[color])
+        self.sequence.enqueue(ball)

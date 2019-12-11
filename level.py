@@ -15,13 +15,11 @@ class Level:
         """
         :type size: int
         :type frog_position: Point
-        :type start: Point
-        :type end: Point
+        :type start: float
+        :type end: float
         """
         self.sequence = Sequence()
         self.sequence_size = size
-        self.start = start
-        self.end = end
 
         x = sym.Symbol('x')
         self.path = x ** 2 / 1000
@@ -31,8 +29,9 @@ class Level:
         self.res2 = sym.sqrt(1 + self.res)
         self.delta_length = 0.5
 
+        self.start = Point(start, math.ceil(self.calculator(start)))
+        self.end = Point(end, math.ceil(self.calculator(end)))
         self._initialize_first_ball()
-        self.end = Point(800, math.ceil(self.calculator(800)))
 
     def change_coordinates(self, ball):
         """

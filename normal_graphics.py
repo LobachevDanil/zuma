@@ -1,18 +1,17 @@
 import math
 import sys
 
-from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QRectF, QPoint
-from PyQt5.QtGui import QPixmap, QPainter, QPen, QBrush, QTransform
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel, QWidget
+from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint
+from PyQt5.QtGui import QPixmap, QPainter, QBrush, QTransform
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel
 
 from Point import Point
 from ball import Ball
 from frog import Frog
 from game import Game
-from level import Level
 from level2 import Level2
+from level4 import Level4
 from level3 import Level3
-from textures.level4 import Level4
 
 FROG_SIZE = 100
 
@@ -65,8 +64,7 @@ class Graphics(QMainWindow):
         qp.drawEllipse(self.game.frog.position.x, self.game.frog.position.y, 4, 4)
         qp.drawLine(level.start.x, level.start.y, level.end.x, level.end.y)
 
-        # qp.drawPoints(*self.data)
-        qp.drawPolyline(*self.data)
+        qp.drawPolyline(*self.initialize_level_data())
 
     def initialize_level_data(self):
         data = []
@@ -98,7 +96,6 @@ class Graphics(QMainWindow):
 
     def timerEvent(self, event: 'QTimerEvent'):
         self.game.update(self.mouse_cursor)
-        print('update_game')
         self.update_graphic()
         if self.game.is_ending:
             self.timer.stop()
@@ -174,7 +171,7 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(200, 400))
-    level = Level2(100, Point(0, 0), Point(700, 700))
+    level = Level3(15, 100, 850)
     game = Game(frog, level)
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
@@ -182,3 +179,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+(0, 900)
+(-1.5, 1.5)
+(100, 850)
