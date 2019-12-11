@@ -35,3 +35,8 @@ class Sequence:
         item = SequenceItem(ball, next_ball, next_ball.past)
         next_ball.past.next = item
         next_ball.past = item
+        tmp = item
+        while tmp is not None:
+            if tmp.next is not None:
+                tmp.value.position = tmp.next.value.position
+            tmp = tmp.next

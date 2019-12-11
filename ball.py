@@ -20,7 +20,7 @@ class Ball:
         self.parameter = parameter
 
     def is_collision(self, other):
-        return self.position.get_distance(other.posotion) <= 2 * Ball.RADIUS
+        return self.position.get_distance(other.position) <= Ball.RADIUS
 
     def __str__(self):
         return "{0}: {1}".format(self.position, self.color)
