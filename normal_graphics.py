@@ -12,6 +12,7 @@ from game import Game
 from level2 import Level2
 from level4 import Level4
 from level3 import Level3
+from level5 import Level5
 
 FROG_SIZE = 100
 
@@ -170,8 +171,8 @@ class Graphics(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    frog = Frog(Point(200, 400))
-    level = Level3(15, 100, 850)
+    frog = Frog(Point(500, 400))
+    level = Level5(30, 2 * math.pi, 9 * math.pi)
     game = Game(frog, level)
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
@@ -183,3 +184,4 @@ if __name__ == '__main__':
 (0, 900)
 (-1.5, 1.5)
 (100, 850)
+(2 * math.pi, 9 * math.pi)
