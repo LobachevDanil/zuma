@@ -10,7 +10,7 @@ from colors import Colors
 from sequence import Sequence
 
 
-class Level:
+class Level3:
     def __init__(self, size, start, end):
         """
         :type size: int
@@ -24,12 +24,15 @@ class Level:
         self.end = end
 
         x = sym.Symbol('x')
-        self.path = x ** 2 / 1000
-        self.calculator = lambda t: t ** 2 / 1000
+        self.path = 100 * sym.sin(x / 50) + 400
+        self.calculator = lambda t: 100 * math.sin(t / 50) + 400
         self.path_diff = sym.diff(self.path, x, 1)
-        self.res = self.path_diff.powsimp(2)
+        self.res = self.path_diff ** 2
         self.res2 = sym.sqrt(1 + self.res)
+        print(self.res2)
         self.delta_length = 0.5
+        self.integrator = lambda t: math.sqrt(4 * math.cos(t / 50) ** 2 + 1)
+        self.start = Point(0, self.calculator(0))
 
         self._initialize_first_ball()
         self.end = Point(800, math.ceil(self.calculator(800)))
@@ -59,8 +62,8 @@ class Level:
     def get_offset(self, ball):
         b = ball.position.x
         x = sym.Symbol('x')
-        while sym.integrate(self.res2, (x, ball.position.x, b)) < self.delta_length:
-            b += 0.2
+        while integrate.quad(self.integrator, ball.position.x, b)[0] < self.delta_length:
+            b += 0.5
         return b
 
     def update_balls_position(self):
@@ -85,3 +88,6 @@ class Level:
         color = random.randint(0, len(Colors.get_all_colors()) - 1)
         self.sequence.enqueue(Ball(self.start.x, self.start.y, Colors.get_all_colors()[color]))
         print('was')
+
+
+Level3(1, Point(0, 0), Point(0, 0))

@@ -9,12 +9,14 @@ class Ball:
     def __init__(self, x, y, color):
         self.position = Point(x, y)
         self.color = color
+        self.parameter = 0
 
-    def change_position(self, position):
+    def change_position(self, position, parameter=0):
         """
         :type position: Point
         """
         self.position = position
+        self.parameter = parameter
 
     def is_collision(self, other):
         return self.position.get_distance(other.posotion) <= 2 * Ball.RADIUS

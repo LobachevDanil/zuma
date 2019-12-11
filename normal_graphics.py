@@ -10,6 +10,9 @@ from ball import Ball
 from frog import Frog
 from game import Game
 from level import Level
+from level2 import Level2
+from level3 import Level3
+from textures.level4 import Level4
 
 FROG_SIZE = 100
 
@@ -67,8 +70,8 @@ class Graphics(QMainWindow):
 
     def initialize_level_data(self):
         data = []
-        for i in range(0, 900):
-            data.append(QPoint(i, self.game.level.get_value(i)))
+        for point in self.game.level.get_path():
+            data.append(QPoint(point[0], point[1]))
         return data
 
     def update_graphic(self):
@@ -95,6 +98,7 @@ class Graphics(QMainWindow):
 
     def timerEvent(self, event: 'QTimerEvent'):
         self.game.update(self.mouse_cursor)
+        print('update_game')
         self.update_graphic()
         if self.game.is_ending:
             self.timer.stop()
@@ -170,9 +174,9 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(200, 400))
-    level = Level(1, Point(0, 0), Point(700, 700))
+    level = Level2(100, Point(0, 0), Point(700, 700))
     game = Game(frog, level)
-    g = Graphics(game, Point(900, 900))
+    g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
 
 
