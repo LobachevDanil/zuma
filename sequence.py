@@ -39,4 +39,5 @@ class Sequence:
         while tmp is not None:
             if tmp.next is not None:
                 tmp.value.position = tmp.next.value.position
+                tmp.value.parameter = tmp.next.value.parameter
             tmp = tmp.next

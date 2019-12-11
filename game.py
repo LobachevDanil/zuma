@@ -11,7 +11,6 @@ class Game:
     def __init__(self, frog, level):
         """
         :type frog: Frog
-        :type level: Level
         """
         self.frog = frog
         self.level = level
@@ -43,6 +42,7 @@ class Game:
                         self.level.sequence.add_ball(bullet.ball, tmp.next)
                     else:
                         self.level.sequence.add_ball(bullet.ball, tmp)
+                    self.level.offset_first_ball()
                     break
                 tmp = tmp.past
 
