@@ -14,9 +14,14 @@ class Colors(enum.Enum):
     yellow = TEXTURE_PATH + "yellow2.png"
     frog = TEXTURE_PATH + "frog_ball_empty.png"
 
+    bomb = TEXTURE_PATH + "bomb.png"
+    time = TEXTURE_PATH + "time.png"
+    pointer = TEXTURE_PATH + "pointer.png"
+
     @staticmethod
     def get_all_colors():
         return [Colors.red, Colors.green, Colors.blue, Colors.blue, Colors.purple, Colors.yellow]
 
-
-print(Colors.red.value)
+    @staticmethod
+    def get_all_bonus(self):
+        return [Colors.bomb, Colors.time, Colors.pointer]

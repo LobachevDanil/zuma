@@ -34,6 +34,7 @@ class Graphics(QMainWindow):
 
         self.frog_bullet = self.initialize_bullet()
         self.frog_picture = self.initialize_frog()
+        self.bullet_pictures = dict()
 
         self.data = self.initialize_level_data()
 
@@ -63,7 +64,7 @@ class Graphics(QMainWindow):
         qp.drawEllipse(level.start.x - offset, level.start.y - offset, Ball.RADIUS, Ball.RADIUS)
         qp.drawEllipse(level.end.x - offset, level.end.y - offset, Ball.RADIUS, Ball.RADIUS)
         qp.drawEllipse(self.game.frog.position.x, self.game.frog.position.y, 4, 4)
-        qp.drawLine(level.start.x, level.start.y, level.end.x, level.end.y)
+        # qp.drawLine(level.start.x, level.start.y, level.end.x, level.end.y)
 
         qp.drawPolyline(*self.initialize_level_data())
 
@@ -79,6 +80,8 @@ class Graphics(QMainWindow):
         while tmp is not None:
             self.draw_ball(self.pictures[tmp.value], tmp.value)
             tmp = tmp.past
+        for bullet in self.game.bullets:
+            self.draw_ball(self.bullet_pictures[bullet], bullet.ball)
 
     def rotate_frog(self):
         bullet_pm0 = QPixmap(self.game.frog.current_ball.color.value).scaled(FROG_SIZE, FROG_SIZE)
@@ -117,6 +120,10 @@ class Graphics(QMainWindow):
                 self.pictures[tmp.value] = self.initialize_ball(tmp.value)
                 print(tmp.value.color)
             tmp = tmp.past
+
+        for bullet in self.game.bullets:
+            if bullet not in self.bullet_pictures:
+                self.bullet_pictures[bullet] = self.initialize_ball(bullet.ball)
 
     def initialize_frog(self):
         ql = QLabel(self)

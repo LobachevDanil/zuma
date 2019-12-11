@@ -20,7 +20,7 @@ class Level5:
         """
         self.sequence = Sequence()
         self.sequence_size = size
-        self.delta_length = 0.3
+        self.delta_length = 3
         self.start_param = start
         self.end_param = end
         self.offset = Point(500, 400)
@@ -80,6 +80,9 @@ class Level5:
         if self.sequence.size < self.sequence_size and self.start.get_distance(
                 self.sequence.tail.value.position) >= Ball.RADIUS:
             self._add_ball()
+        if self.sequence.size == self.sequence_size:
+            print('change')
+            self.delta_length = 0.3
 
     def _add_ball(self):
         color = random.randint(0, len(Colors.get_all_colors()) - 1)
