@@ -12,7 +12,7 @@ class Colors(enum.Enum):
     blue = TEXTURE_PATH + "blue2.png"
     purple = TEXTURE_PATH + "purple2.png"
     yellow = TEXTURE_PATH + "yellow2.png"
-    frog = TEXTURE_PATH + "frog_ball2.png"
+    frog = TEXTURE_PATH + "frog_ball_empty.png"
 
     @staticmethod
     def get_all_colors():

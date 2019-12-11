@@ -29,7 +29,7 @@ class Graphics(QMainWindow):
         self.timer = QBasicTimer()
         self.initUi()
 
-        self.bullet = self.initialize_bullet()
+        self.frog_bullet = self.initialize_bullet()
         self.frog_picture = self.initialize_frog()
 
         self.data = self.initialize_level_data()
@@ -79,8 +79,14 @@ class Graphics(QMainWindow):
             tmp = tmp.past
 
     def rotate_frog(self):
-        bullet_pm = QPixmap(self.game.frog.current_ball.color.value).scaled(2 * FROG_SIZE, 2 * FROG_SIZE)
-        self.bullet.setPixmap(bullet_pm)
+        bullet_pm0 = QPixmap(self.game.frog.current_ball.color.value).scaled(FROG_SIZE, FROG_SIZE)
+        self.frog_bullet[0].setPixmap(bullet_pm0)
+        bullet_pm1 = QPixmap(self.game.frog.next_ball.color.value).scaled(FROG_SIZE / 6, FROG_SIZE / 6)
+        self.frog_bullet[1].setPixmap(bullet_pm1)
+        delta = FROG_SIZE / 4
+        betta = math.radians(self.game.frog.angle + 90)
+        self.frog_bullet[1].move(-delta * math.cos(betta) + self.game.frog.position.x - FROG_SIZE / 12,
+                                 -delta * math.sin(betta) + self.game.frog.position.y - FROG_SIZE / 12)
 
         t = QTransform().rotate(self.game.frog.angle)
         pm = QPixmap(self.game.frog.color.value).scaled(FROG_SIZE, FROG_SIZE, Qt.KeepAspectRatio,
@@ -123,12 +129,18 @@ class Graphics(QMainWindow):
 
     def initialize_bullet(self):
         ql = QLabel(self)
-        ql.setFixedSize(2 * FROG_SIZE, 2 * FROG_SIZE)
+        ql.setFixedSize(FROG_SIZE, FROG_SIZE)
         ql.setAlignment(Qt.AlignCenter)
-        ql.setPixmap(QPixmap(self.game.frog.current_ball.color.value).scaled(2 * FROG_SIZE, 2 * FROG_SIZE))
-        ql.move(self.game.frog.position.x - FROG_SIZE, self.game.frog.position.y - FROG_SIZE)
+        ql.setPixmap(QPixmap(self.game.frog.current_ball.color.value).scaled(FROG_SIZE, FROG_SIZE))
+        ql.move(self.game.frog.position.x - FROG_SIZE / 2, self.game.frog.position.y - FROG_SIZE / 2)
         ql.show()
-        return ql
+        ql1 = QLabel(self)
+        ql1.setFixedSize(FROG_SIZE / 6, FROG_SIZE / 6)
+        ql1.setAlignment(Qt.AlignCenter)
+        ql1.setPixmap(QPixmap(self.game.frog.next_ball.color.value).scaled(FROG_SIZE / 6, FROG_SIZE / 6))
+        ql1.move(self.game.frog.position.x - FROG_SIZE / 12, self.game.frog.position.y - FROG_SIZE / 12)
+        ql1.show()
+        return [ql, ql1]
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -136,6 +148,10 @@ class Graphics(QMainWindow):
             self.game.frog.swap_balls()
         if key == Qt.Key_Space:
             self.game.shoot()
+        if key == Qt.Key_A:
+            self.frog_picture.hide()
+        if key == Qt.Key_D:
+            self.frog_picture.show()
 
     def mouseMoveEvent(self, event):
         self.mouse_cursor = Point(event.x(), event.y())
@@ -154,7 +170,7 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(200, 400))
-    level = Level(50, Point(0, 0), Point(700, 700))
+    level = Level(1, Point(0, 0), Point(700, 700))
     game = Game(frog, level)
     g = Graphics(game, Point(900, 900))
     sys.exit(app.exec_())
