@@ -1,12 +1,11 @@
 import enum
 import os
 
-TEXTURE_PATH = "textures/new/"
 TEXTURE_PATH2 = os.path.join(".", "textures", "new")
-print(os.path.join(TEXTURE_PATH2, "ab"))
 
 
 class Colors(enum.Enum):
+    """Описывает виды шаров"""
     red = os.path.join(TEXTURE_PATH2, "red2.png")
     green = os.path.join(TEXTURE_PATH2, "green2.png")
     blue = os.path.join(TEXTURE_PATH2, "blue2.png")
@@ -23,5 +22,5 @@ class Colors(enum.Enum):
         return [Colors.red, Colors.green, Colors.blue, Colors.blue, Colors.purple, Colors.yellow]
 
     @staticmethod
-    def get_all_bonus(self):
+    def get_all_bonus():
         return [Colors.bomb, Colors.time, Colors.pointer]

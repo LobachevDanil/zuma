@@ -1,4 +1,6 @@
 class SequenceItem:
+    """Элемент последовательности шариков"""
+
     def __init__(self, ball, next, past):
         self.next = next
         self.past = past
@@ -6,6 +8,7 @@ class SequenceItem:
 
 
 class Sequence:
+    """Последовательность шариков"""
     tail: SequenceItem
     head: SequenceItem
     size: int
@@ -16,9 +19,12 @@ class Sequence:
         self.size = 0
 
     def is_empty(self):
+        """Содержит ли последовательность шарики"""
         return self.head is None
 
     def enqueue(self, ball):
+        """Добавление элемента в конец последовательности (вызывается при добавлении шаров,
+         которые должны быть изначально в уровне) """
         if self.is_empty():
             self.head = self.tail = SequenceItem(ball, None, None)
         else:
@@ -29,6 +35,7 @@ class Sequence:
 
     def add_ball(self, ball, next_ball):
         """
+        Добавить шар в последовательность после 'next_ball'
         :type ball: Ball
         :type next_ball: SequenceItem
         """
@@ -43,11 +50,13 @@ class Sequence:
             tmp = tmp.next
 
     def replace_head(self, ball):
+        """Замена головы последовательности"""
         item = SequenceItem(ball, None, self.head)
         self.head.next = item
         self.head = item
 
     def replace_tail(self, ball):
+        """Замена хвоста последовательности"""
         item = SequenceItem(ball, self.tail, None)
         self.tail.past = item
         self.tail = item
