@@ -21,6 +21,5 @@ class Bullet:
 class Status(enum.Enum):
     """Статус пули"""
     FLY = 0
-    COLLISION = 1
-    CAN_DELETE = 2
-    DELETE = 3
+    CAN_DELETE = 1
+    DELETE = 2

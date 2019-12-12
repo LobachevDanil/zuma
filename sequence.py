@@ -63,3 +63,50 @@ class Sequence:
                 tmp.value.position = tmp.next.value.position
                 tmp.value.parameter = tmp.next.value.parameter
             tmp = tmp.next
+
+    def delete_similar(self, ball, collision):
+        """
+              @type ball: Ball
+              @type collision: SequenceItem
+              """
+        start, end, length = self.get_delete_interval(ball, collision)
+        print('length', length)
+        if length < 2:
+            return False
+        tmp1 = end.next
+        tmp2 = start
+        positions = []
+        while tmp2 is not None:
+            positions.append(tmp2.value.position)
+            tmp2 = tmp2.next
+        i = 0
+        while tmp1 is not None:
+            tmp1.value.position = positions[i]
+            tmp1 = tmp1.next
+            i += 1
+        start.past.next = end.next
+        end.next.past = start.past
+        self.size -= length
+        return True
+
+    def get_delete_interval(self, ball, collision):
+        """
+        @type ball: Ball
+        @type collision: SequenceItem
+        """
+        start = None
+        end = None
+        length = 0
+        tmp = collision
+        while tmp is not None and ball.color == tmp.value.color:
+            start = tmp
+            length += 1
+            tmp = tmp.past
+
+        tmp = collision
+        while tmp is not None and ball.color == tmp.value.color:
+            end = tmp
+            length += 1
+            tmp = tmp.next
+
+        return start, end, length - 1

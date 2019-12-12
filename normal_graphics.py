@@ -194,7 +194,7 @@ class Graphics(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     frog = Frog(Point(500, 450))
-    level = Level5(6, 2 * math.pi, 9 * math.pi)
+    level = Level5(10, 2 * math.pi, 9 * math.pi)
     game = Game(frog, level)
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
