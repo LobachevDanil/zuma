@@ -23,7 +23,7 @@ class Level5:
         self.delta_length = 3
         self.start_param = start
         self.end_param = end
-        self.offset = Point(500, 400)
+        self.offset = Point(500, 450)
 
         self.func = lambda t: 23 + 15 * t
         self.calculator_x = lambda h: self.func(h) * math.cos(h) + self.offset.x

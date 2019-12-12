@@ -124,6 +124,9 @@ class Graphics(QMainWindow):
         for bullet in self.game.bullets:
             if bullet not in self.bullet_pictures:
                 self.bullet_pictures[bullet] = self.initialize_ball(bullet.ball)
+            if not bullet.flag:
+                pass
+                #self.bullet_pictures[bullet].hide()
 
     def initialize_frog(self):
         ql = QLabel(self)
@@ -178,8 +181,8 @@ class Graphics(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    frog = Frog(Point(500, 400))
-    level = Level5(30, 2 * math.pi, 9 * math.pi)
+    frog = Frog(Point(500, 450))
+    level = Level5(6, 2 * math.pi, 9 * math.pi)
     game = Game(frog, level)
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())

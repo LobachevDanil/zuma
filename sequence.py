@@ -41,3 +41,13 @@ class Sequence:
                 tmp.value.position = tmp.next.value.position
                 tmp.value.parameter = tmp.next.value.parameter
             tmp = tmp.next
+
+    def replace_head(self, ball):
+        item = SequenceItem(ball, None, self.head)
+        self.head.next = item
+        self.head = item
+
+    def replace_tail(self, ball):
+        item = SequenceItem(ball, self.tail, None)
+        self.tail.past = item
+        self.tail = item

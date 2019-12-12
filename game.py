@@ -33,18 +33,28 @@ class Game:
     def check_bullets_hits(self):
         for bullet in self.bullets:
             tmp = self.level.sequence.head
-            while tmp is not None:
+            if bullet.ball.is_collision(tmp.value) and bullet.flag:
+                bullet.flag = False
+                self.treat_head(bullet, tmp)
+                self.level.offset_first_ball()
+                break
+            tmp = self.level.sequence.head.past
+            while tmp.past is not None:
                 if bullet.ball.is_collision(tmp.value) and bullet.flag:
                     bullet.flag = False
-                    s1 = self.calculate_area(bullet.ball.position, tmp.value.position, tmp.next.value.position)
-                    s2 = self.calculate_area(bullet.ball.position, tmp.value.position, tmp.past.value.position)
-                    if s1 <= s2:
-                        self.level.sequence.add_ball(bullet.ball, tmp.next)
-                    else:
+                    angle = self.calculate_angle(bullet.ball.position, tmp.value.position, tmp.past.value.position)
+                    if angle <= math.pi / 2:
                         self.level.sequence.add_ball(bullet.ball, tmp)
+                    else:
+                        self.level.sequence.add_ball(bullet.ball, tmp.next)
                     self.level.offset_first_ball()
                     break
                 tmp = tmp.past
+            if bullet.ball.is_collision(tmp.value) and bullet.flag:
+                bullet.flag = False
+                self.treat_tail(bullet, tmp)
+                self.level.offset_first_ball()
+                break
 
     def calculate_area(self, point1, point2, point3):
         a = point1.get_distance(point2)
@@ -53,6 +63,26 @@ class Game:
         p = (a + b + c) / 2
         s = math.sqrt(p * (p - a) * (p - b) * (p - c))
         return s
+
+    def calculate_angle(self, point1, point2, point3):
+        a = point1.get_distance(point2)
+        b = point2.get_distance(point3)
+        c = point1.get_distance(point3)
+        return math.acos((c ** 2 - a ** 2 - b ** 2) / (-2 * a * b))
+
+    def treat_head(self, bullet, head):
+        angle = self.calculate_angle(bullet.ball.position, head.value.position, head.past.value.position)
+        if angle <= math.pi / 2:
+            self.level.sequence.add_ball(bullet.ball, head.past)
+        else:
+            self.level.sequence.replace_head(bullet.ball)
+
+    def treat_tail(self, bullet, tail):
+        angle = self.calculate_angle(bullet.ball.position, tail.value.position, tail.next.value.position)
+        if angle <= math.pi / 2:
+            self.level.sequence.add_ball(bullet.ball, tail.next)
+        else:
+            self.level.sequence.replace_tail(bullet.ball)
 
     def shoot(self):
         length = self.frog.position.get_distance(self.cursor) / 8

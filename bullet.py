@@ -11,3 +11,5 @@ class Bullet:
     def update_position(self):
         if self.flag:
             self.ball.change_position(Point(self.ball.position.x + self.delta_x, self.ball.position.y + self.delta_y))
+
+
