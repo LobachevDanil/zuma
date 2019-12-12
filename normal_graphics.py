@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel
 
 from Point import Point
 from ball import Ball
+from bullet import Status
 from frog import Frog
 from game import Game
 from level2 import Level2
@@ -27,6 +28,7 @@ class Graphics(QMainWindow):
         self.game = game
         self.pictures = dict()
         self.mouse_cursor = Point(size.x / 2, size.y - 1)
+        self.size_vision = size
 
         self.setFixedSize(size.x, size.y)
         self.timer = QBasicTimer()
@@ -80,8 +82,8 @@ class Graphics(QMainWindow):
         while tmp is not None:
             self.draw_ball(self.pictures[tmp.value], tmp.value)
             tmp = tmp.past
-        for bullet in self.game.bullets:
-            self.draw_ball(self.bullet_pictures[bullet], bullet.ball)
+        for bullet, picture in self.bullet_pictures.items():
+            self.draw_ball(picture, bullet.ball)
 
     def rotate_frog(self):
         bullet_pm0 = QPixmap(self.game.frog.current_ball.color.value).scaled(FROG_SIZE, FROG_SIZE)
@@ -124,9 +126,19 @@ class Graphics(QMainWindow):
         for bullet in self.game.bullets:
             if bullet not in self.bullet_pictures:
                 self.bullet_pictures[bullet] = self.initialize_ball(bullet.ball)
-            if not bullet.flag:
-                pass
-                #self.bullet_pictures[bullet].hide()
+            elif bullet.status == Status.CAN_DELETE or not self.is_visible(bullet):
+                ql = self.bullet_pictures[bullet]
+                del self.bullet_pictures[bullet]
+                ql.hide()
+                ql.deleteLater()
+                bullet.status = Status.DELETE
+
+    def is_visible(self, bullet):
+        """
+        Проверяет видна ли еще пуля
+        @type bullet: Bullet
+        """
+        return 0 < bullet.ball.position.x < self.size_vision.x and 0 < bullet.ball.position.y < self.size_vision.y
 
     def initialize_frog(self):
         ql = QLabel(self)
