@@ -42,12 +42,7 @@ class Sequence:
         item = SequenceItem(ball, next_ball, next_ball.past)
         next_ball.past.next = item
         next_ball.past = item
-        tmp = item
-        while tmp is not None:
-            if tmp.next is not None:
-                tmp.value.position = tmp.next.value.position
-                tmp.value.parameter = tmp.next.value.parameter
-            tmp = tmp.next
+        self._offset_next(item)
 
     def replace_head(self, ball):
         """Замена головы последовательности"""
@@ -60,3 +55,11 @@ class Sequence:
         item = SequenceItem(ball, self.tail, None)
         self.tail.past = item
         self.tail = item
+        self._offset_next(item)
+
+    def _offset_next(self, tmp):
+        while tmp is not None:
+            if tmp.next is not None:
+                tmp.value.position = tmp.next.value.position
+                tmp.value.parameter = tmp.next.value.parameter
+            tmp = tmp.next

@@ -7,6 +7,7 @@ from colors import Colors
 
 
 class Frog:
+    """Описывает класс лягушки"""
     next_ball: Ball
     current_ball: Ball
 
@@ -21,19 +22,24 @@ class Frog:
         self.angle = 0
 
     def get_next_ball(self):
+        """Изменяет текущий шар и назначает следующий"""
         self.current_ball = self.next_ball
         self.next_ball = self.get_random_ball()
 
     def get_random_ball(self):
+        """Возвращает случайный шар"""
         all_colors = Colors.get_all_colors()
         number = random.randint(0, len(all_colors) - 1)
         return Ball(self.position.x, self.position.y, all_colors[number])
 
     def swap_balls(self):
+        """Меняет текущий и следующий шары местами"""
         self.current_ball, self.next_ball = self.next_ball, self.current_ball
 
     def transform_angle(self, cursor_point):
         """
+        Расчитывает угол на который надо повернуть лягушку
+        в зависимости от положение курсора
         :type cursor_point: Point
         """
         delta_x = cursor_point.x - self.position.x
