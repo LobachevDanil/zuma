@@ -117,11 +117,21 @@ class Graphics(QMainWindow):
     def refresh_textures(self):
         sequence = self.game.level.sequence
         tmp = sequence.head
+        actual = []
         while tmp is not None:
             if tmp.value not in self.pictures:
                 self.pictures[tmp.value] = self.initialize_ball(tmp.value)
-                print(tmp.value.color)
+                #self.pictures[tmp.value].setText(str(tmp.count))
+                print(tmp.value.color, tmp.count)
+            actual.append(tmp.value)
             tmp = tmp.past
+        most_delete = list(set(self.pictures.keys()) - set(actual))
+        for ball in most_delete:
+            ql = self.pictures[ball]
+            del self.pictures[ball]
+            ql.hide()
+            ql.deleteLater()
+            ball.status = Status.DELETE
 
         for bullet in self.game.bullets:
             if bullet not in self.bullet_pictures:

@@ -20,6 +20,7 @@ class Level5:
         """
         self.sequence = Sequence()
         self.sequence_size = size
+        self.current_size = 0
         self.delta_length = 3
         self.start_param = start
         self.end_param = end
@@ -77,7 +78,7 @@ class Level5:
             tmp.value.change_position(new_position, t)
             tmp = tmp.past
 
-        if self.sequence.size < self.sequence_size and self.start.get_distance(
+        if self.current_size < self.sequence_size and self.start.get_distance(
                 self.sequence.tail.value.position) >= Ball.RADIUS:
             self._add_ball()
         if self.sequence.size >= self.sequence_size:
@@ -88,6 +89,7 @@ class Level5:
         ball = Ball(self.start.x, self.start.y, Colors.get_all_colors()[color])
         ball.parameter = self.start_param
         self.sequence.enqueue(ball)
+        self.current_size += 1
 
     def offset_first_ball(self):
         first = self.sequence.head.value

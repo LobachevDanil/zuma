@@ -1,3 +1,8 @@
+from bullet import Status
+
+COUNTER = 0
+
+
 class SequenceItem:
     """Элемент последовательности шариков"""
 
@@ -5,6 +10,9 @@ class SequenceItem:
         self.next = next
         self.past = past
         self.value = ball
+        global COUNTER
+        self.count = COUNTER
+        COUNTER += 1
 
 
 class Sequence:
@@ -77,13 +85,18 @@ class Sequence:
         tmp2 = start
         positions = []
         while tmp2 is not None:
-            positions.append(tmp2.value.position)
+            positions.append((tmp2.value.position, tmp2.value.parameter))
             tmp2 = tmp2.next
         i = 0
         while tmp1 is not None:
-            tmp1.value.position = positions[i]
+            tmp1.value.position = positions[i][0]
+            tmp1.value.parameter = positions[i][1]
             tmp1 = tmp1.next
             i += 1
+        tmp = start
+        while tmp != end:
+            tmp.value.status = Status.CAN_DELETE
+            tmp = tmp.next
         start.past.next = end.next
         end.next.past = start.past
         self.size -= length

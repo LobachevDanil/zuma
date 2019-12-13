@@ -10,16 +10,16 @@ class Bullet:
         self.delta_x = delta_x
         self.delta_y = delta_y
         self.ball = ball
-        self.status = Status.FLY
+        self.status = Status.ACTIVE
 
     def update_position(self):
         """Обновляет позицию пули"""
-        if self.status == Status.FLY:
+        if self.status == Status.ACTIVE:
             self.ball.change_position(Point(self.ball.position.x + self.delta_x, self.ball.position.y + self.delta_y))
 
 
 class Status(enum.Enum):
     """Статус пули"""
-    FLY = 0
+    ACTIVE = 0
     CAN_DELETE = 1
     DELETE = 2

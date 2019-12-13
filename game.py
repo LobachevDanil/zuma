@@ -21,7 +21,7 @@ class Game:
         self.is_ending = False
 
     def update(self, cursor_position):
-        if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS / 10:
+        if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS:
             self.is_ending = True
             print('Game Over! You lose')
             return
@@ -43,26 +43,25 @@ class Game:
                 must_remove.append(bullet)
                 continue
             tmp = self.level.sequence.head
-            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.FLY:
+            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
                 bullet.status = Status.CAN_DELETE
                 self.treat_head(bullet, tmp)
                 self.level.offset_first_ball()
                 break
             tmp = self.level.sequence.head.past
-            while tmp.past is not None and bullet.status == Status.FLY:
+            while tmp.past is not None and bullet.status == Status.ACTIVE:
                 if bullet.ball.is_collision(tmp.value):
-                    if not self.level.sequence.delete_similar(bullet.ball, tmp):
-                        self.treat_body(bullet, tmp)
-                        self.level.offset_first_ball()
+                    #if not self.level.sequence.delete_similar(bullet.ball, tmp):
+                    self.treat_body(bullet, tmp)
+                    self.level.offset_first_ball()
                     bullet.status = Status.CAN_DELETE
                     break
                 tmp = tmp.past
-            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.FLY:
+            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
                 bullet.status = Status.CAN_DELETE
                 self.treat_tail(bullet, tmp)
                 self.level.offset_first_ball()
         if len(must_remove) != 0:
-            print(len(must_remove))
             self.remove_bullets(must_remove)
 
     def calculate_angle(self, point1, point2, point3):
@@ -95,7 +94,6 @@ class Game:
     def remove_bullets(self, must_remove):
         for bullet in must_remove:
             self.bullets.remove(bullet)
-        print('bullets size ', len(self.bullets))
 
     def shoot(self):
         length = self.frog.position.get_distance(self.cursor) / 8

@@ -1,4 +1,5 @@
 from Point import Point
+from bullet import Status
 
 
 class Ball:
@@ -9,6 +10,7 @@ class Ball:
         self.position = Point(x, y)
         self.color = color
         self.parameter = 0
+        self.status = Status.ACTIVE
 
     def change_position(self, position, parameter=0):
         """
