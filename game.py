@@ -21,13 +21,13 @@ class Game:
         self.is_ending = False
 
     def update(self, cursor_position):
-        if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS:
-            self.is_ending = True
-            print('Game Over! You lose')
-            return
         if self.level.sequence.size == 0:
             self.is_ending = True
             print('You win!!!')
+            return
+        if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS / 2:
+            self.is_ending = True
+            print('Game Over! You lose')
             return
         self.check_bullets_hits()
         self.cursor = cursor_position
@@ -51,9 +51,9 @@ class Game:
             tmp = self.level.sequence.head.past
             while tmp.past is not None and bullet.status == Status.ACTIVE:
                 if bullet.ball.is_collision(tmp.value):
-                    #if not self.level.sequence.delete_similar(bullet.ball, tmp):
-                    self.treat_body(bullet, tmp)
-                    self.level.offset_first_ball()
+                    if not self.level.sequence.delete_similar(bullet.ball, tmp):
+                        self.treat_body(bullet, tmp)
+                        self.level.offset_first_ball()
                     bullet.status = Status.CAN_DELETE
                     break
                 tmp = tmp.past

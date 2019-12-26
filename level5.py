@@ -81,7 +81,7 @@ class Level5:
         if self.current_size < self.sequence_size and self.start.get_distance(
                 self.sequence.tail.value.position) >= Ball.RADIUS:
             self._add_ball()
-        if self.sequence.size >= self.sequence_size:
+        if self.current_size >= self.sequence_size:
             self.delta_length = 0.3
 
     def _add_ball(self):
@@ -98,7 +98,8 @@ class Level5:
             while second.is_collision(first) or second.parameter > first.parameter:
                 first.parameter += 0.005
                 first.change_position(Point(*self.translate_to_point(first.parameter)), first.parameter)
-        pass
+        if first.parameter >= self.end_param:
+            self.sequence.size = 0
 
     def _init_length(self):
         a = 600

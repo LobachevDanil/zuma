@@ -15,7 +15,9 @@ class Bullet:
     def update_position(self):
         """Обновляет позицию пули"""
         if self.status == Status.ACTIVE:
-            self.ball.change_position(Point(self.ball.position.x + self.delta_x, self.ball.position.y + self.delta_y))
+            new_x = self.ball.position.x + self.delta_x
+            new_y = self.ball.position.y + self.delta_y
+            self.ball.change_position(Point(new_x, new_y))
 
 
 class Status(enum.Enum):

@@ -17,9 +17,6 @@ class SequenceItem:
 
 class Sequence:
     """Последовательность шариков"""
-    tail: SequenceItem
-    head: SequenceItem
-    size: int
 
     def __init__(self):
         self.head = None
@@ -31,8 +28,8 @@ class Sequence:
         return self.head is None
 
     def enqueue(self, ball):
-        """Добавление элемента в конец последовательности (вызывается при добавлении шаров,
-         которые должны быть изначально в уровне) """
+        """Добавление элемента в конец последовательности (вызывается
+        при добавлении шаров, которые должны быть изначально в уровне) """
         if self.is_empty():
             self.head = self.tail = SequenceItem(ball, None, None)
         else:
