@@ -21,6 +21,7 @@ class Game:
         self.is_ending = False
 
     def update(self, cursor_position):
+        print('size', self.level.sequence.size)
         if self.level.sequence.size == 0:
             self.is_ending = True
             print('You win!!!')
@@ -43,11 +44,11 @@ class Game:
                 must_remove.append(bullet)
                 continue
             tmp = self.level.sequence.head
-            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
+            '''if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
                 bullet.status = Status.CAN_DELETE
                 self.treat_head(bullet, tmp)
                 self.level.offset_first_ball()
-                self.level.sequence.delete_similar(bullet.ball, tmp   )
+                self.level.sequence.delete_similar(bullet.ball, tmp)
                 break
             tmp = self.level.sequence.head.past
             while tmp.past is not None and bullet.status == Status.ACTIVE:
@@ -63,6 +64,24 @@ class Game:
                 bullet.status = Status.CAN_DELETE
                 self.treat_tail(bullet, tmp)
                 self.level.offset_first_ball()
+                self.level.sequence.delete_similar(bullet.ball, tmp)
+            tmp = self.level.sequence.head'''
+            while tmp is not None:
+                if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
+                    if tmp == self.level.sequence.head:
+                        self.treat_head(bullet, tmp)
+                        print('head')
+                    elif tmp == self.level.sequence.tail:
+                        self.treat_tail(bullet, tmp)
+                        print('tail')
+                    else:
+                        self.treat_body(bullet, tmp)
+                        print('body')
+                    bullet.status = Status.CAN_DELETE
+                    self.level.sequence.delete_similar(bullet.ball, tmp)
+                    self.level.offset_first_ball()
+                    break
+                tmp = tmp.past
         if len(must_remove) != 0:
             self.remove_bullets(must_remove)
 
@@ -75,7 +94,7 @@ class Game:
     def treat_head(self, bullet, head):
         angle = self.calculate_angle(bullet.ball.position, head.value.position, head.past.value.position)
         if angle <= math.pi / 2:
-            self.level.sequence.add_ball(bullet.ball, head.past)
+            self.level.sequence.add_ball(bullet.ball, head)
         else:
             self.level.sequence.replace_head(bullet.ball)
 

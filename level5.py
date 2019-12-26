@@ -67,6 +67,8 @@ class Level5:
 
     def update_balls_position(self):
         tmp = self.sequence.head
+        if tmp is None:
+            return
         self._change_coordinates(tmp.value)
         tmp = self.sequence.head.past
         while tmp is not None:
@@ -92,6 +94,8 @@ class Level5:
         self.current_size += 1
 
     def offset_first_ball(self):
+        if self.sequence.head is None:
+            return
         first = self.sequence.head.value
         second = None if self.sequence.head.past is None else self.sequence.head.past.value
         if second is not None:

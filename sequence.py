@@ -74,14 +74,19 @@ class Sequence:
 
     def delete_similar(self, ball, collision):
         """
-              @type ball: Ball
-              @type collision: SequenceItem
-              """
+        Удаляет шары одинакового с `ball` цвета
+        @type ball: Ball
+        @type collision: SequenceItem
+        """
         start, end, length = self.get_delete_interval(ball, collision)
         print('length', length)
         if length < 3:
             return False
         if end == self.head:
+            if start == self.tail:
+                self.size -= length
+                self.head = self.tail = None
+                return True
             self.head = start.past
             start = None
             self.head.next = None
@@ -103,14 +108,19 @@ class Sequence:
         while tmp != end:
             tmp.value.status = Status.CAN_DELETE
             tmp = tmp.next
-        start.past.next = end.next
+        if start == self.tail:
+            self.tail = end.next
+            self.tail.past = None
+        else:
+            start.past.next = end.next
         end.next.past = start.past
         self.size -= length
-        print(self.size)
+        print('current size ', self.size)
         return True
 
     def get_delete_interval(self, ball, collision):
         """
+        Определяет интервал, с одинаковым цветом шаров.
         @type ball: Ball
         @type collision: SequenceItem
         """
@@ -118,7 +128,7 @@ class Sequence:
         end = None
         length = 0
         tmp = ball
-        if collision.past.value == ball:
+        if collision != self.tail and collision.past.value == ball:
             tmp = collision.past
         else:
             tmp = collision.next
@@ -134,3 +144,10 @@ class Sequence:
             length += 1
             tmp = tmp.next
         return start, end, length - 1
+
+    def change_status(self, start, end):
+        tmp = start
+        while tmp != end:
+            tmp.value.status = Status.CAN_DELETE
+            tmp = tmp.next
+        end.value.status = Status.CAN_DELETE

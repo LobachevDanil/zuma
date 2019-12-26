@@ -122,7 +122,7 @@ class Graphics(QMainWindow):
             if tmp.value not in self.pictures:
                 self.pictures[tmp.value] = self.initialize_ball(tmp.value)
                 # self.pictures[tmp.value].setText(str(tmp.count))
-                print(tmp.value.color, tmp.count)
+                #print(tmp.value.color, tmp.count)
             actual.append(tmp.value)
             tmp = tmp.past
         most_delete = list(set(self.pictures.keys()) - set(actual))
