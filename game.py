@@ -47,6 +47,7 @@ class Game:
                 bullet.status = Status.CAN_DELETE
                 self.treat_head(bullet, tmp)
                 self.level.offset_first_ball()
+                self.level.sequence.delete_similar(bullet.ball, tmp   )
                 break
             tmp = self.level.sequence.head.past
             while tmp.past is not None and bullet.status == Status.ACTIVE:
@@ -97,7 +98,7 @@ class Game:
             self.bullets.remove(bullet)
 
     def shoot(self):
-        length = self.frog.position.get_distance(self.cursor) / 8
+        length = self.frog.position.get_distance(self.cursor) / 16
         delta_x = (self.cursor.x - self.frog.position.x) / length
         delta_y = (self.cursor.y - self.frog.position.y) / length
         bullet = Bullet(delta_x, delta_y, self.frog.current_ball)

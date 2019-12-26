@@ -55,6 +55,7 @@ class Sequence:
         item = SequenceItem(ball, None, self.head)
         self.head.next = item
         self.head = item
+        self.size += 1
 
     def replace_tail(self, ball):
         """Замена хвоста последовательности"""
@@ -62,6 +63,7 @@ class Sequence:
         self.tail.past = item
         self.tail = item
         self._offset_next(item)
+        self.size += 1
 
     def _offset_next(self, tmp):
         while tmp is not None:
@@ -79,6 +81,12 @@ class Sequence:
         print('length', length)
         if length < 3:
             return False
+        if end == self.head:
+            self.head = start.past
+            start = None
+            self.head.next = None
+            self.size -= length
+            return True
         tmp1 = end.next
         tmp2 = start
         positions = []
@@ -98,6 +106,7 @@ class Sequence:
         start.past.next = end.next
         end.next.past = start.past
         self.size -= length
+        print(self.size)
         return True
 
     def get_delete_interval(self, ball, collision):
@@ -124,5 +133,4 @@ class Sequence:
             end = tmp
             length += 1
             tmp = tmp.next
-
         return start, end, length - 1
