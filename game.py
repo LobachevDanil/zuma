@@ -51,10 +51,11 @@ class Game:
             tmp = self.level.sequence.head.past
             while tmp.past is not None and bullet.status == Status.ACTIVE:
                 if bullet.ball.is_collision(tmp.value):
-                    if not self.level.sequence.delete_similar(bullet.ball, tmp):
-                        self.treat_body(bullet, tmp)
-                        self.level.offset_first_ball()
+                    # if not self.level.sequence.delete_similar(bullet.ball, tmp):
+                    self.treat_body(bullet, tmp)
+                    self.level.offset_first_ball()
                     bullet.status = Status.CAN_DELETE
+                    self.level.sequence.delete_similar(bullet.ball, tmp)
                     break
                 tmp = tmp.past
             if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:

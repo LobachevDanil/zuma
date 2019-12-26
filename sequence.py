@@ -48,6 +48,7 @@ class Sequence:
         next_ball.past.next = item
         next_ball.past = item
         self._offset_next(item)
+        self.size += 1
 
     def replace_head(self, ball):
         """Замена головы последовательности"""
@@ -76,7 +77,7 @@ class Sequence:
               """
         start, end, length = self.get_delete_interval(ball, collision)
         print('length', length)
-        if length < 2:
+        if length < 3:
             return False
         tmp1 = end.next
         tmp2 = start
@@ -107,13 +108,18 @@ class Sequence:
         start = None
         end = None
         length = 0
-        tmp = collision
+        tmp = ball
+        if collision.past.value == ball:
+            tmp = collision.past
+        else:
+            tmp = collision.next
+        starter = tmp
         while tmp is not None and ball.color == tmp.value.color:
             start = tmp
             length += 1
             tmp = tmp.past
 
-        tmp = collision
+        tmp = starter
         while tmp is not None and ball.color == tmp.value.color:
             end = tmp
             length += 1
