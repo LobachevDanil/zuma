@@ -3,7 +3,7 @@ import sys
 
 from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint
 from PyQt5.QtGui import QPixmap, QPainter, QBrush, QTransform
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel, QProgressBar
 
 from Point import Point
 from ball import Ball
@@ -12,7 +12,6 @@ from frog import Frog
 from game import Game
 from level import Level
 from levels import *
-
 
 FROG_SIZE = 100
 
@@ -42,6 +41,9 @@ class Graphics(QMainWindow):
     def initUi(self):
         self.setWindowTitle('Zuma')
         self.setMouseTracking(True)
+        self.progress = QProgressBar(self)
+        self.progress.setGeometry(700, 10, 250, 20)
+        self.progress.setValue(0)
         self.timer.start(30, self)
         self.show()
 
@@ -83,6 +85,8 @@ class Graphics(QMainWindow):
             tmp = tmp.past
         for bullet, picture in self.bullet_pictures.items():
             self.draw_ball(picture, bullet.ball)
+
+        self.progress.setValue(self.game.level.released_balls / self.game.level.sequence_size * 100)
 
     def rotate_frog(self):
         bullet_pm0 = QPixmap(self.game.frog.current_ball.color.value).scaled(FROG_SIZE, FROG_SIZE)
@@ -217,4 +221,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

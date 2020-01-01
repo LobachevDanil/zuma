@@ -13,6 +13,7 @@ class Game:
     def __init__(self, frog, level):
         """
         :type frog: Frog
+        :type frog: Level
         """
         self.frog = frog
         self.level = level
