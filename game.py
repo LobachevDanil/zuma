@@ -1,5 +1,6 @@
 import math
 
+from Point import Point
 from ball import Ball
 from bullet import Bullet, Status
 from colors import Colors
@@ -44,28 +45,6 @@ class Game:
                 must_remove.append(bullet)
                 continue
             tmp = self.level.sequence.head
-            '''if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
-                bullet.status = Status.CAN_DELETE
-                self.treat_head(bullet, tmp)
-                self.level.offset_first_ball()
-                self.level.sequence.delete_similar(bullet.ball, tmp)
-                break
-            tmp = self.level.sequence.head.past
-            while tmp.past is not None and bullet.status == Status.ACTIVE:
-                if bullet.ball.is_collision(tmp.value):
-                    # if not self.level.sequence.delete_similar(bullet.ball, tmp):
-                    self.treat_body(bullet, tmp)
-                    self.level.offset_first_ball()
-                    bullet.status = Status.CAN_DELETE
-                    self.level.sequence.delete_similar(bullet.ball, tmp)
-                    break
-                tmp = tmp.past
-            if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
-                bullet.status = Status.CAN_DELETE
-                self.treat_tail(bullet, tmp)
-                self.level.offset_first_ball()
-                self.level.sequence.delete_similar(bullet.ball, tmp)
-            tmp = self.level.sequence.head'''
             while tmp is not None:
                 if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
                     if tmp == self.level.sequence.head:
@@ -92,11 +71,19 @@ class Game:
         return math.acos((c ** 2 - a ** 2 - b ** 2) / (-2 * a * b))
 
     def treat_head(self, bullet, head):
-        angle = self.calculate_angle(bullet.ball.position, head.value.position, head.past.value.position)
-        if angle <= math.pi / 2:
-            self.level.sequence.add_ball(bullet.ball, head)
+        if self.level.sequence.size == 1:
+            past_point = Point(*self.level.translate_to_point(head.value.parameter - self.level.delta_t))
+            angle = self.calculate_angle(bullet.ball.position, head.value.position, past_point)
+            if angle <= math.pi / 2:
+                self.level.sequence.enqueue(bullet.ball)
+            else:
+                self.level.sequence.replace_head(bullet.ball)
         else:
-            self.level.sequence.replace_head(bullet.ball)
+            angle = self.calculate_angle(bullet.ball.position, head.value.position, head.past.value.position)
+            if angle <= math.pi / 2:
+                self.level.sequence.add_ball(bullet.ball, head)
+            else:
+                self.level.sequence.replace_head(bullet.ball)
 
     def treat_body(self, bullet, tmp):
         angle = self.calculate_angle(bullet.ball.position, tmp.value.position, tmp.past.value.position)

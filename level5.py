@@ -20,13 +20,15 @@ class Level5:
         """
         self.sequence = Sequence()
         self.sequence_size = size
-        self.current_size = 0
+        self.released_balls = 0
         self.delta_length = 3
         self.start_param = start
         self.end_param = end
         self.offset = Point(500, 450)
+        self.normal_delta_length = 0.3
 
         self.func = lambda t: 23 + 15 * t
+        self.delta_t = 0.005
         self.calculator_x = lambda h: self.func(h) * math.cos(h) + self.offset.x
         self.calculator_y = lambda h: self.func(h) * math.sin(h) + self.offset.y
         self.integrator = lambda t: math.sqrt(15 + 23 ** 2 + 225 * t * t + 46 * 15 * t)
@@ -62,7 +64,7 @@ class Level5:
     def _get_offset(self, ball):
         b = ball.parameter
         while integrate.quad(self.integrator, ball.parameter, b)[0] < self.delta_length:
-            b += 0.005
+            b += self.delta_t
         return b
 
     def update_balls_position(self):
@@ -75,23 +77,23 @@ class Level5:
             new_position = tmp.value.position
             t = tmp.value.parameter
             while new_position.get_distance(tmp.next.value.position) > Ball.RADIUS:
-                t = t + 0.005
+                t += self.delta_t
                 new_position = Point(*self.translate_to_point(t))
             tmp.value.change_position(new_position, t)
             tmp = tmp.past
 
-        if self.current_size < self.sequence_size and self.start.get_distance(
+        if self.released_balls < self.sequence_size and self.start.get_distance(
                 self.sequence.tail.value.position) >= Ball.RADIUS:
             self._add_ball()
-        if self.current_size >= self.sequence_size:
-            self.delta_length = 0.3
+        if self.released_balls >= self.sequence_size:
+            self.delta_length = self.normal_delta_length
 
     def _add_ball(self):
         color = random.randint(0, len(Colors.get_all_colors()) - 1)
         ball = Ball(self.start.x, self.start.y, Colors.get_all_colors()[color])
         ball.parameter = self.start_param
         self.sequence.enqueue(ball)
-        self.current_size += 1
+        self.released_balls += 1
 
     def offset_first_ball(self):
         if self.sequence.head is None:
@@ -100,7 +102,7 @@ class Level5:
         second = None if self.sequence.head.past is None else self.sequence.head.past.value
         if second is not None:
             while second.is_collision(first) or second.parameter > first.parameter:
-                first.parameter += 0.005
+                first.parameter += self.delta_t
                 first.change_position(Point(*self.translate_to_point(first.parameter)), first.parameter)
         if first.parameter >= self.end_param:
             self.sequence.size = 0
