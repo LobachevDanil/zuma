@@ -10,6 +10,7 @@ from ball import Ball
 from bullet import Status
 from frog import Frog
 from game import Game
+from level import Level
 from level2 import Level2
 from level4 import Level4
 from level3 import Level3
@@ -122,7 +123,7 @@ class Graphics(QMainWindow):
             if tmp.value not in self.pictures:
                 self.pictures[tmp.value] = self.initialize_ball(tmp.value)
                 # self.pictures[tmp.value].setText(str(tmp.count))
-                #print(tmp.value.color, tmp.count)
+                # print(tmp.value.color, tmp.count)
             actual.append(tmp.value)
             tmp = tmp.past
         most_delete = list(set(self.pictures.keys()) - set(actual))
@@ -201,11 +202,22 @@ class Graphics(QMainWindow):
             event.ignore()
 
 
+LEVEL_DATA = [
+    (Frog(Point(700, 200)), Level(10, 50, 850, 0.8, 2, lambda t: 300 * math.sin(t / 50) + 400, 0.1,
+                                  lambda t: t, lambda t: 300 * math.sin(t / 50) + 400,
+                                  lambda t: math.sqrt(1 + (6 * math.cos(t / 50)) ** 2))),
+
+    (Frog(Point(500, 450)), Level(30, 2 * math.pi, 9 * math.pi, 0.3, 3, lambda t: 23 + 15 * t, 0.005,
+                                  lambda h: (23 + 15 * h) * math.cos(h) + 500,
+                                  lambda h: (23 + 15 * h) * math.sin(h) + 450,
+                                  lambda t: math.sqrt(15 + 23 ** 2 + 225 * t * t + 46 * 15 * t))),
+    (Frog(Point(500, 450)), Level(10, 0, 3.5 * math.pi / 2, 0.5, 0.5, lambda t: 400, 0.001,
+                                  lambda t: 400 * math.cos(t) + 450, lambda t: 400 * math.sin(t) + 450, lambda t: 400))]
+
+
 def main():
     app = QApplication(sys.argv)
-    frog = Frog(Point(500, 450))
-    level = Level5(5, 2 * math.pi, 9 * math.pi)
-    game = Game(frog, level)
+    game = Game(LEVEL_DATA[0][0], LEVEL_DATA[0][1])
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
 

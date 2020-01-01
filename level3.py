@@ -8,6 +8,7 @@ from Point import Point
 from ball import Ball
 from colors import Colors
 from sequence import Sequence
+from level import Level
 
 
 class Level3:

@@ -79,7 +79,7 @@ class Sequence:
         @type collision: SequenceItem
         """
         start, end, length = self.get_delete_interval(ball, collision)
-        print('length', length)
+        #print('length', length)
         if length < 3:
             return False
         if end == self.head:
@@ -115,7 +115,7 @@ class Sequence:
             start.past.next = end.next
         end.next.past = start.past
         self.size -= length
-        print('current size ', self.size)
+        #print('current size ', self.size)
         return True
 
     def get_delete_interval(self, ball, collision):

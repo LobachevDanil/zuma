@@ -5,7 +5,6 @@ from ball import Ball
 from bullet import Bullet, Status
 from colors import Colors
 from frog import Frog
-from level import Level
 
 
 class Game:
@@ -22,12 +21,13 @@ class Game:
         self.is_ending = False
 
     def update(self, cursor_position):
-        print('size', self.level.sequence.size)
+        # print('size', self.level.sequence.size)
         if self.level.sequence.size == 0:
             self.is_ending = True
             print('You win!!!')
             return
-        if self.level.end.get_distance(self.level.sequence.head.value.position) <= Ball.RADIUS / 2:
+        if self.level.sequence.size < 0 or self.level.end.get_distance(
+                self.level.sequence.head.value.position) <= Ball.RADIUS / 2:
             self.is_ending = True
             print('Game Over! You lose')
             return
@@ -49,13 +49,13 @@ class Game:
                 if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
                     if tmp == self.level.sequence.head:
                         self.treat_head(bullet, tmp)
-                        print('head')
+                        # print('head')
                     elif tmp == self.level.sequence.tail:
                         self.treat_tail(bullet, tmp)
-                        print('tail')
+                        # print('tail')
                     else:
                         self.treat_body(bullet, tmp)
-                        print('body')
+                        # print('body')
                     bullet.status = Status.CAN_DELETE
                     self.level.sequence.delete_similar(bullet.ball, tmp)
                     self.level.offset_first_ball()
