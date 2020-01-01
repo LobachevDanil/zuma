@@ -11,10 +11,8 @@ from bullet import Status
 from frog import Frog
 from game import Game
 from level import Level
-from level2 import Level2
-from level4 import Level4
-from level3 import Level3
-from level5 import Level5
+from levels import *
+
 
 FROG_SIZE = 100
 
@@ -203,21 +201,16 @@ class Graphics(QMainWindow):
 
 
 LEVEL_DATA = [
-    (Frog(Point(700, 200)), Level(10, 50, 850, 0.8, 2, lambda t: 300 * math.sin(t / 50) + 400, 0.1,
-                                  lambda t: t, lambda t: 300 * math.sin(t / 50) + 400,
-                                  lambda t: math.sqrt(1 + (6 * math.cos(t / 50)) ** 2))),
-
-    (Frog(Point(500, 450)), Level(30, 2 * math.pi, 9 * math.pi, 0.3, 3, lambda t: 23 + 15 * t, 0.005,
-                                  lambda h: (23 + 15 * h) * math.cos(h) + 500,
-                                  lambda h: (23 + 15 * h) * math.sin(h) + 450,
-                                  lambda t: math.sqrt(15 + 23 ** 2 + 225 * t * t + 46 * 15 * t))),
-    (Frog(Point(500, 450)), Level(10, 0, 3.5 * math.pi / 2, 0.5, 0.5, lambda t: 400, 0.001,
-                                  lambda t: 400 * math.cos(t) + 450, lambda t: 400 * math.sin(t) + 450, lambda t: 400))]
+    (Frog(Point(700, 200)), Level0()),
+    (Frog(Point(500, 450)), Level1()),
+    (Frog(Point(500, 450)), Level2()),
+    (Frog(Point(650, 450)), Level3()),
+    (Frog(Point(450, 450)), Level4())]
 
 
 def main():
     app = QApplication(sys.argv)
-    game = Game(LEVEL_DATA[0][0], LEVEL_DATA[0][1])
+    game = Game(LEVEL_DATA[1][0], LEVEL_DATA[1][1])
     g = Graphics(game, Point(1000, 1000))
     sys.exit(app.exec_())
 
@@ -225,7 +218,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-(0, 900)
-(-1.5, 1.5)
-(100, 850)
-(2 * math.pi, 9 * math.pi)
