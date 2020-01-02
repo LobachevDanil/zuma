@@ -12,6 +12,7 @@ from frog import Frog
 from game import Game
 from level import Level
 from levels import *
+from menu import Menu, LevelsMenu
 
 FROG_SIZE = 100
 
@@ -31,6 +32,9 @@ class Graphics(QMainWindow):
         self.setFixedSize(size.x, size.y)
         self.timer = QBasicTimer()
         self.initUi()
+        self.menu = Menu(self)
+        self.menu.show()
+        self.levels_menu = LevelsMenu(self, LEVEL_DATA)
 
         self.frog_bullet = self.initialize_bullet()
         self.frog_picture = self.initialize_frog()
@@ -61,14 +65,23 @@ class Graphics(QMainWindow):
         self.update()
         qp.end()
 
+    def close_menu(self):
+        self.menu.hide()
+        self.menu.lower()
+        self.show()
+
+    def close_level(self, number):
+        self.levels_menu.hide()
+        self.levels_menu.lower()
+        #self.game = Game(*LEVEL_DATA[number])
+        self.show()
+
     def draw_level(self, qp):
         level = self.game.level
         offset = Ball.RADIUS / 2
         qp.drawEllipse(level.start.x - offset, level.start.y - offset, Ball.RADIUS, Ball.RADIUS)
         qp.drawEllipse(level.end.x - offset, level.end.y - offset, Ball.RADIUS, Ball.RADIUS)
         qp.drawEllipse(self.game.frog.position.x, self.game.frog.position.y, 4, 4)
-        # qp.drawLine(level.start.x, level.start.y, level.end.x, level.end.y)
-
         qp.drawPolyline(*self.initialize_level_data())
 
     def initialize_level_data(self):
