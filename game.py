@@ -10,13 +10,15 @@ from frog import Frog
 class Game:
     """Описывает игру"""
 
-    def __init__(self, frog, level):
+    def __init__(self, frog, level, player):
         """
         :type frog: Frog
         :type frog: Level
+        :type frog: Player
         """
         self.frog = frog
         self.level = level
+        self.player = player
         self.bullets = []
         self.cursor = None
         self.is_ending = False
@@ -26,6 +28,7 @@ class Game:
         if self.level.sequence.size == 0:
             self.is_ending = True
             print('You win!!!')
+            print(self.player.scores)
             return
         if self.level.sequence.size < 0 or self.level.end.get_distance(
                 self.level.sequence.head.value.position) <= Ball.RADIUS / 2:
@@ -58,7 +61,8 @@ class Game:
                         self.treat_body(bullet, tmp)
                         # print('body')
                     bullet.status = Status.CAN_DELETE
-                    self.level.sequence.delete_similar(bullet.ball, tmp)
+                    delete = self.level.sequence.delete_similar(bullet.ball, tmp)
+                    self.player.inc_scores(delete)
                     self.level.offset_first_ball()
                     break
                 tmp = tmp.past

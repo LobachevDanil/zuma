@@ -1,3 +1,6 @@
+import dill
+
+
 class Player:
     def __init__(self, name, scores=0):
         """
@@ -19,15 +22,13 @@ class ResultTable:
         self._download_table()
 
     def _download_table(self):
-        with open(self.name, 'r', encoding='utf-8')as f:
-            for line in f:
-                words = line.split('|')
-                self._players.append(Player(words[0], int(words[1])))
+        with open('saves/' + self.name, 'rb')as f:
+            self._players = dill.load(f)
 
     def save_table(self):
         self._sort_table()
-        with open(self.name, 'w', encoding='utf-8') as f:
-            f.writelines(self._players)
+        with open('saves/' + self.name, 'wb') as f:
+            dill.dump(self._players, f)
 
     def _sort_table(self):
         self._players.sort(key=lambda x: x.scores)

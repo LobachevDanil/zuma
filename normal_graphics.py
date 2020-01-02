@@ -1,4 +1,6 @@
-import math
+import os
+
+import dill
 import sys
 
 from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint
@@ -13,18 +15,19 @@ from game import Game
 from level import Level
 from levels import *
 from menu import Menu, LevelsMenu
+from player import Player
 
 FROG_SIZE = 100
 
 
 class Graphics(QMainWindow):
-    def __init__(self, game, size):
+    def __init__(self, size):
         """
-        :type game: Game
         :type size: Point
         """
         super().__init__()
-        self.game = game
+        self.game = None
+        self.player = None
         self.pictures = dict()
         self.mouse_cursor = Point(size.x / 2, size.y - 1)
         self.size_vision = size
@@ -36,19 +39,12 @@ class Graphics(QMainWindow):
         self.menu.show()
         self.levels_menu = LevelsMenu(self, LEVEL_DATA)
 
-        self.frog_bullet = self.initialize_bullet()
-        self.frog_picture = self.initialize_frog()
-        self.bullet_pictures = dict()
-
-        self.data = self.initialize_level_data()
-
     def initUi(self):
         self.setWindowTitle('Zuma')
         self.setMouseTracking(True)
         self.progress = QProgressBar(self)
         self.progress.setGeometry(700, 10, 250, 20)
         self.progress.setValue(0)
-        self.timer.start(30, self)
         self.show()
 
     def draw_ball(self, ql: QLabel, b: Ball):
@@ -66,15 +62,56 @@ class Graphics(QMainWindow):
         qp.end()
 
     def close_menu(self):
-        self.menu.hide()
-        self.menu.lower()
-        self.show()
+        if self.player is not None and self.game is not None:
+            self.menu.hide()
+            self.menu.lower()
+            self.start_game()
+        else:
+            self.menu.print_message('Загрузите предыдущее сохранение')
 
-    def close_level(self, number):
+    def change_level(self):
+        self.player = self.menu.get_player()
+        if self.player is not None:
+            self.menu.hide()
+            self.levels_menu.show()
+        else:
+            self.menu.print_message('Введите имя игрока')
+
+    def close_level_menu(self, number):
+        print('Выбран уровень: ' + number)
         self.levels_menu.hide()
         self.levels_menu.lower()
-        #self.game = Game(*LEVEL_DATA[number])
+        self.game = Game(*LEVEL_DATA[number], self.player)
+        self.start_game()
+
+    def start_game(self):
+        self.initialize_all()
+        self.timer.start(30, self)
+        self.setFocus()
         self.show()
+
+    def save_game(self):
+        with open('saves/' + self.game.player.name + '_save.txt', 'wb') as f:
+            dill.dump(self.game, f)
+            print('Ваша игра была сохранена')
+
+    def load_past_game(self):
+        self.player = self.menu.get_player()
+        if self.player is None:
+            self.menu.print_message('Введите имя игрока')
+        elif os.path.exists(os.path.join('saves', self.player.name + '_save.txt')):
+            with open('saves/' + self.player.name + '_save.txt', 'rb') as f:
+                self.game = dill.load(f)
+                self.player = self.game.player
+                self.menu.print_message('Вы можете продолжить сохраненную игру, нажмите Play')
+        else:
+            self.menu.print_message('Сохранений не найдено, можете начать новую игру,\nвыберите уровень')
+
+    def initialize_all(self):
+        self.frog_bullet = self.initialize_bullet()
+        self.frog_picture = self.initialize_frog()
+        self.bullet_pictures = dict()
+        self.data = self.initialize_level_data()
 
     def draw_level(self, qp):
         level = self.game.level
@@ -212,6 +249,8 @@ class Graphics(QMainWindow):
                                      QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
+            if self.game is not None or not self.game.is_ending():
+                self.save_game()
             event.accept()
         else:
             event.ignore()
@@ -227,8 +266,8 @@ LEVEL_DATA = [
 
 def main():
     app = QApplication(sys.argv)
-    game = Game(LEVEL_DATA[1][0], LEVEL_DATA[1][1])
-    g = Graphics(game, Point(1000, 1000))
+    game = Game(LEVEL_DATA[1][0], LEVEL_DATA[1][1], Player(''))
+    g = Graphics(Point(1000, 1000))
     sys.exit(app.exec_())
 
 
