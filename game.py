@@ -23,6 +23,7 @@ class Game:
         self.is_win = False
 
     def update(self, cursor_position):
+        """Обновляет состояние игры"""
         # print('size', self.level.sequence.size)
         if self.level.sequence.size == 0:
             self.is_ending = True
@@ -50,7 +51,8 @@ class Game:
                 continue
             tmp = self.level.sequence.head
             while tmp is not None:
-                if bullet.ball.is_collision(tmp.value) and bullet.status == Status.ACTIVE:
+                if bullet.ball.is_collision(tmp.value) \
+                        and bullet.status == Status.ACTIVE:
                     if tmp == self.level.sequence.head:
                         self.treat_head(bullet, tmp)
                         # print('head')
@@ -61,8 +63,8 @@ class Game:
                         self.treat_body(bullet, tmp)
                         # print('body')
                     bullet.status = Status.CAN_DELETE
-                    delete = self.level.sequence.delete_similar(bullet.ball, tmp)
-                    self.player.inc_scores(delete)
+                    d = self.level.sequence.delete_similar(bullet.ball, tmp)
+                    self.player.inc_scores(d)
                     self.level.offset_first_ball()
                     break
                 tmp = tmp.past
@@ -77,7 +79,8 @@ class Game:
 
     def treat_head(self, bullet, head):
         if self.level.sequence.size == 1:
-            past_point = Point(*self.level.translate_to_point(head.value.parameter - self.level.delta_t))
+            value = head.value.parameter - self.level.delta_t
+            past_point = Point(*self.level.translate_to_point(value))
             angle = self.calculate_angle(bullet.ball.position, head.value.position, past_point)
             if angle <= math.pi / 2:
                 self.level.sequence.enqueue(bullet.ball)

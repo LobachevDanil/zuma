@@ -1,7 +1,3 @@
-import sys
-import copy
-import time
-
 from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint, QSize
 from PyQt5.QtGui import QPixmap, QPainter, QBrush, QTransform, QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel, QProgressBar, QWidget, QPushButton, \
@@ -112,10 +108,6 @@ class ResultTableWidget(QWidget):
         self.table = table
 
         qw = QWidget(self)
-        '''grid_layout = QGridLayout(self)
-        qw.setLayout(grid_layout)
-        qw.setFixedSize(400, 200)
-        qw.move(320, 400)'''
 
         result = QLabel('You Win!!!' if is_win else 'You Lose', self)
         result.setFixedSize(400, 50)
@@ -135,10 +127,6 @@ class ResultTableWidget(QWidget):
             table_widget.setItem(i, 1, QTableWidgetItem(str(e.scores)))
             i += 1
 
-        # table_widget.resizeColumnsToContents()
-        # table_widget.setMinimumSize(qw.size())
         table_widget.setFixedSize(215, 185)
-        table_widget.move(500 - 215/2, 450 - 185/2)
-        print(table_widget.size())
-        #grid_layout.addWidget(table_widget)
+        table_widget.move(500 - 215 / 2, 450 - 185 / 2)
         qw.show()

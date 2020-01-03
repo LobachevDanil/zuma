@@ -19,7 +19,8 @@ class Colors(enum.Enum):
 
     @staticmethod
     def get_all_colors():
-        return [Colors.red, Colors.green, Colors.blue, Colors.blue, Colors.purple, Colors.yellow]
+        return [Colors.red, Colors.green, Colors.blue,
+                Colors.blue, Colors.purple, Colors.yellow]
 
     @staticmethod
     def get_all_bonus():

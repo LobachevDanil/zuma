@@ -8,8 +8,6 @@ from colors import Colors
 
 class Frog:
     """Описывает класс лягушки"""
-    next_ball: Ball
-    current_ball: Ball
 
     def __init__(self, position):
         """
