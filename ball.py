@@ -3,7 +3,6 @@ from bullet import Status
 
 
 class Ball:
-    """Описыват шар  в игре"""
     RADIUS = 40
 
     def __init__(self, x, y, color):
@@ -14,7 +13,7 @@ class Ball:
 
     def change_position(self, position, parameter=0):
         """
-        Обновляет позицию шара и его параметр
+        Updates the position of the ball and its parameter
         :type position: Point
         :type parameter: float
         """
@@ -22,7 +21,7 @@ class Ball:
         self.parameter = parameter
 
     def is_collision(self, other):
-        """Проверка на столкновение шаров"""
+        """Check for collision of balls"""
         return self.position.get_distance(other.position) <= Ball.RADIUS
 
     def __str__(self):

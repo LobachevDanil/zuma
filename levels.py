@@ -100,3 +100,22 @@ class Level4(Level):
         integrator = lambda t: 400 * math.sqrt(math.cos(t) ** 2 + 9 * math.sin(3 * t) ** 2)
         super().__init__(size, start, end, normal_delta_length, fast_delta_length,
                          None, delta_t, calculator_x, calculator_y, integrator)
+
+
+class LevelTest1(Level):
+    def __init__(self):
+        """Движение по кривой, заданной параметрически"""
+        size = 3
+        start = 0
+        end = 400
+        normal_delta_length = 41
+        fast_delta_length = 41
+        func_x = lambda t: t
+        func_y = lambda t: t
+        delta_t = 1
+        offset = Point(0, 0)
+        calculator_x = lambda t: func_x(t)
+        calculator_y = lambda t: func_y(t)
+        integrator = lambda t: math.sqrt(2)
+        super().__init__(size, start, end, normal_delta_length, fast_delta_length,
+                         None, delta_t, calculator_x, calculator_y, integrator)

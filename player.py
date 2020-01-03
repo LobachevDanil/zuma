@@ -18,9 +18,9 @@ class Player:
 
 
 class ResultTable:
-    def __init__(self):
+    def __init__(self, name):
         self._players = []
-        self.name = 'scores_table.txt'
+        self.name = name
         self._download_table()
 
     def _download_table(self):

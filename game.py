@@ -3,8 +3,6 @@ import math
 from Point import Point
 from ball import Ball
 from bullet import Bullet, Status
-from colors import Colors
-from frog import Frog
 
 
 class Game:

@@ -164,7 +164,7 @@ class Graphics(QMainWindow):
                 path = os.path.join('saves', self.player.name + '_save.txt')
                 print('Удалено сохранение: ' + path)
                 os.remove(path)
-            table = ResultTable()
+            table = ResultTable('scores_table.txt')
             table.add_player(self.player)
             table.save_table()
             self.result_table = ResultTableWidget(table, self, self.game.is_win)

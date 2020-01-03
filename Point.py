@@ -2,8 +2,6 @@ import math
 
 
 class Point:
-    """Описывает точку"""
-
     def __init__(self, x, y):
         """
             :type x: double
@@ -14,7 +12,7 @@ class Point:
 
     def get_distance(self, other):
         """
-        Расчитывает расстояние между точками
+        Calculates the distance between points
         :type other: Point
         """
         return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
