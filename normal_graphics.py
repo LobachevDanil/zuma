@@ -14,8 +14,8 @@ from frog import Frog
 from game import Game
 from level import Level
 from levels import *
-from menu import Menu, LevelsMenu
-from player import Player
+from menu import Menu, LevelsMenu, ResultTableWidget
+from player import Player, ResultTable
 
 FROG_SIZE = 100
 
@@ -27,6 +27,7 @@ class Graphics(QMainWindow):
         """
         super().__init__()
         self.game = None
+        self.is_loading = False
         self.player = None
         self.pictures = dict()
         self.mouse_cursor = Point(size.x / 2, size.y - 1)
@@ -78,7 +79,7 @@ class Graphics(QMainWindow):
             self.menu.print_message('Введите имя игрока')
 
     def close_level_menu(self, number):
-        print('Выбран уровень: ' + number)
+        print('Выбран уровень: ' + str(number))
         self.levels_menu.hide()
         self.levels_menu.lower()
         self.game = Game(*LEVEL_DATA[number], self.player)
@@ -102,6 +103,7 @@ class Graphics(QMainWindow):
         elif os.path.exists(os.path.join('saves', self.player.name + '_save.txt')):
             with open('saves/' + self.player.name + '_save.txt', 'rb') as f:
                 self.game = dill.load(f)
+                self.is_loading = True
                 self.player = self.game.player
                 self.menu.print_message('Вы можете продолжить сохраненную игру, нажмите Play')
         else:
@@ -158,6 +160,15 @@ class Graphics(QMainWindow):
         self.update_graphic()
         if self.game.is_ending:
             self.timer.stop()
+            if self.is_loading:
+                path = os.path.join('saves', self.player.name + '_save.txt')
+                print('Удалено сохранение: ' + path)
+                os.remove(path)
+            table = ResultTable()
+            table.add_player(self.player)
+            table.save_table()
+            self.result_table = ResultTableWidget(table, self, self.game.is_win)
+            self.result_table.show()
         self.rotate_frog()
 
     def initialize_ball(self, ball):
@@ -231,6 +242,8 @@ class Graphics(QMainWindow):
 
     def keyPressEvent(self, event):
         key = event.key()
+        if self.game is None:
+            return
         if key == Qt.Key_Shift:
             self.game.frog.swap_balls()
         if key == Qt.Key_Space:
@@ -249,8 +262,9 @@ class Graphics(QMainWindow):
                                      QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            if self.game is not None or not self.game.is_ending():
-                self.save_game()
+            if self.game is not None:
+                if not self.game.is_ending:
+                    self.save_game()
             event.accept()
         else:
             event.ignore()

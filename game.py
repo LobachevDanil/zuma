@@ -22,11 +22,13 @@ class Game:
         self.bullets = []
         self.cursor = None
         self.is_ending = False
+        self.is_win = False
 
     def update(self, cursor_position):
         # print('size', self.level.sequence.size)
         if self.level.sequence.size == 0:
             self.is_ending = True
+            self.is_win = True
             print('You win!!!')
             print(self.player.scores)
             return

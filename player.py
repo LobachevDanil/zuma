@@ -1,3 +1,5 @@
+import os
+
 import dill
 
 
@@ -22,7 +24,10 @@ class ResultTable:
         self._download_table()
 
     def _download_table(self):
-        with open('saves/' + self.name, 'rb')as f:
+        path = os.path.join('saves', self.name)
+        if not os.path.exists(path):
+            return
+        with open(path, 'rb')as f:
             self._players = dill.load(f)
 
     def save_table(self):
@@ -31,7 +36,19 @@ class ResultTable:
             dill.dump(self._players, f)
 
     def _sort_table(self):
-        self._players.sort(key=lambda x: x.scores)
+        self._players.sort(key=lambda x: x.scores, reverse=True)
+
+    def add_player(self, player):
+        """
+        Добавляет игрока в список
+        @type player: Player
+        """
+        for p in self._players:
+            if player.name.__eq__(p.name):
+                if player.scores > p.scores:
+                    p.scores = player.scores
+                return
+        self._players.append(player)
 
     def get_table(self):
         self._sort_table()

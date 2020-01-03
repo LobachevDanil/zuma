@@ -2,10 +2,10 @@ import sys
 import copy
 import time
 
-from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint
+from PyQt5.QtCore import QBasicTimer, Qt, QTimerEvent, QPoint, QSize
 from PyQt5.QtGui import QPixmap, QPainter, QBrush, QTransform, QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QLabel, QProgressBar, QWidget, QPushButton, \
-    QLineEdit
+    QLineEdit, QGridLayout, QTableWidget, QTableWidgetItem
 
 from player import Player
 
@@ -13,7 +13,7 @@ from player import Player
 class Menu(QWidget):
     def __init__(self, parent):
         """
-
+        Описывает главное окно
         @type parent: QMainWindow
         """
         super().__init__(parent)
@@ -68,11 +68,13 @@ class Menu(QWidget):
     def print_message(self, text):
         self.output.setText(text)
         self.output.adjustSize()
+        self.output.move(500 - self.output.size().width() / 2, 320 - self.output.size().height() / 2)
         self.output.show()
 
 
 class LevelsMenu(QWidget):
     def __init__(self, parent, levels):
+        """Виджет меню выбора уровней"""
         super().__init__(parent)
         self.setFixedSize(parent.size())
         self.setAutoFillBackground(True)
@@ -90,5 +92,53 @@ class LevelsMenu(QWidget):
 
 class LevelButton(QPushButton):
     def __init__(self, parameter, parent, dad):
+        """Описывает кнопки уровней"""
         super().__init__(str(parameter + 1), parent)
         self.clicked.connect(lambda: dad.close_level_menu(parameter))
+
+
+class ResultTableWidget(QWidget):
+    def __init__(self, table, parent, is_win):
+        """
+        Виджет окна результатов
+        @type table: ResultTable
+        """
+        super().__init__(parent)
+        self.setFixedSize(parent.size())
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.green if is_win else Qt.red)
+        self.setPalette(p)
+        self.table = table
+
+        qw = QWidget(self)
+        '''grid_layout = QGridLayout(self)
+        qw.setLayout(grid_layout)
+        qw.setFixedSize(400, 200)
+        qw.move(320, 400)'''
+
+        result = QLabel('You Win!!!' if is_win else 'You Lose', self)
+        result.setFixedSize(400, 50)
+        result.move(370, 250)
+        result.setFont(QFont("sefif", 40))
+        result.show()
+
+        players = self.table.get_table()
+        table_widget = QTableWidget(self)
+        table_widget.setColumnCount(2)
+        table_widget.setRowCount(5)
+        table_widget.setHorizontalHeaderLabels(['Player', 'Scores'])
+        table_widget.horizontalHeaderItem(0).setTextAlignment(Qt.AlignHCenter)
+        i = 0
+        for e in players:
+            table_widget.setItem(i, 0, QTableWidgetItem(e.name))
+            table_widget.setItem(i, 1, QTableWidgetItem(str(e.scores)))
+            i += 1
+
+        # table_widget.resizeColumnsToContents()
+        # table_widget.setMinimumSize(qw.size())
+        table_widget.setFixedSize(215, 185)
+        table_widget.move(500 - 215/2, 450 - 185/2)
+        print(table_widget.size())
+        #grid_layout.addWidget(table_widget)
+        qw.show()

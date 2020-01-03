@@ -50,7 +50,7 @@ class Level1(Level):
 class Level2(Level):
     def __init__(self):
         """Движение по окружности"""
-        size = 18
+        size = 2
         start = 0
         end = 3.5 * math.pi / 2
         normal_delta_length = 0.5
@@ -72,7 +72,7 @@ class Level3(Level):
         start = math.pi / 10
         end = 2 * math.pi
         normal_delta_length = 0.5
-        fast_delta_length = 0.5
+        fast_delta_length = 1
         func = lambda t: math.sqrt((400 * math.cos(t)) ** 2 + (170 * math.sin(t)) ** 2)
         delta_t = 0.001
         offset = Point(450, 450)
